@@ -43,6 +43,8 @@ function renderClinics(centerCoords) {
   });
 
   if (centerCoords) map.setView(centerCoords, 12);
+  
+  map.invalidateSize();
 }
 
 window.openDirections = (lat, lng) => {
