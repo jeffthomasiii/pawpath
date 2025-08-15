@@ -7,7 +7,7 @@
 ## 🌐 Live Demo
 
 Try it here:  
-👉 [https://jeffthomasiii.github.io/pawpath.github.io/](https://jeffthomasiii.github.io/pawpath.github.io/)
+👉 [https://jeffthomasiii.github.io/pawpath/](https://jeffthomasiii.github.io/pawpath/)
 
 
 ## 📦 Features
