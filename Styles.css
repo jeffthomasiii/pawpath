@@ -63,4 +63,33 @@ button {
   color: white;
   border-radius: 4px;
   cursor: pointer;
+}#map {
+  height: 50vh;
+}
+
+.clinic-list {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+}
+
+.clinic-card {
+  padding: 10px;
+  border: 2px solid #3a5a40;
+  border-radius: 6px;
+  background: white;
+}
+
+.clinic-card h3 {
+  margin-top: 0;
+}
+
+.clinic-card button {
+  margin-top: 5px;
+  padding: 6px 10px;
+  border: none;
+  background: #3a5a40;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
 }
