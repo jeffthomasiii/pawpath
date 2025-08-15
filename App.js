@@ -1,5 +1,4 @@
-// Log to debug
-console.log("🌍 PawPath loaded — initializing map...");
+console.log("🌍 PawPath is loading...");
 
 const clinicsData = {
   routine: [
@@ -13,13 +12,11 @@ const clinicsData = {
   ]
 };
 
-// Map setup
 const map = L.map('map').setView([33.92, -117.22], 11);
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors'
 }).addTo(map);
 
-// Render clinic cards + markers
 function renderClinics(centerCoords) {
   map.eachLayer(layer => {
     if (layer instanceof L.Marker) map.removeLayer(layer);
@@ -35,6 +32,65 @@ function renderClinics(centerCoords) {
     `);
 
     const card = document.createElement("div");
+    card.className = "clinic-card";
+    card.innerHTML = `
+      <h3>${c.name}</h3>
+      <p>${c.address}</p>
+      <p>Phone: ${c.phone}</p>
+      <button onclick="openDirections(${c.lat},${c.lng})">Get Directions</button>
+    `;
+    document.getElementById("clinic-list").appendChild(card);
+  });
+
+  if (centerCoords) map.setView(centerCoords, 12);
+}
+
+window.openDirections = (lat, lng) => {
+  const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  window.open(url, '_blank');
+};
+
+document.getElementById("search-btn").onclick = () => {
+  const loc = document.getElementById("location-input").value.trim();
+  if (!loc || loc.length < 3) return alert("Please enter a valid city or ZIP.");
+
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(loc)}`)
+    .then(res => {
+      if (!res.ok) throw new Error("Geocoding failed.");
+      return res.json();
+    })
+    .then(data => {
+      if (!data[0]) return alert("Location not found.");
+      const { lat, lon } = data[0];
+      console.log(`📍 Found: ${lat}, ${lon}`);
+      renderClinics([lat, lon]);
+    })
+    .catch(err => {
+      console.error("❌ Error:", err);
+      alert("Something went wrong fetching the location.");
+    });
+};
+
+document.getElementById("loc-btn").onclick = () => {
+  if (!navigator.geolocation) {
+    alert("Geolocation is not supported by your browser.");
+    return;
+  }
+
+  navigator.geolocation.getCurrentPosition(
+    pos => {
+      const { latitude, longitude } = pos.coords;
+      renderClinics([latitude, longitude]);
+    },
+    err => {
+      console.error("❌ Geolocation error:", err);
+      alert("Could not access your location.");
+    }
+  );
+};
+
+// Initial view
+renderClinics([33.92, -117.22]);    const card = document.createElement("div");
     card.className = "clinic-card";
     card.innerHTML = `
       <h3>${c.name}</h3>
