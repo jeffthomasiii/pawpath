@@ -1,11 +1,28 @@
-<header><h1>Find Pet Clinics Nearby</h1></header>
-<div class="search">
-  <input id="location-input" placeholder="Enter city or ZIP (e.g., 92553 or Moreno Valley, CA)" />
-  <button id="search-btn">Search</button>
-  <button id="loc-btn">Use My Location</button>
-</div>
-<div id="map"></div>
-<div class="clinic-list" id="clinic-list"></div>
-<script src="app.js"></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PawPath - Pet Clinics Near Campers</title>
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+
+  <header>
+    <h1>Find Pet Clinics Nearby</h1>
+  </header>
+
+  <div class="search">
+    <input id="location-input" placeholder="Enter city or ZIP (e.g., 92553)" />
+    <button id="search-btn">Search</button>
+    <button id="loc-btn">Use My Location</button>
+  </div>
+
+  <div id="map"></div>
+  <div class="clinic-list" id="clinic-list"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
