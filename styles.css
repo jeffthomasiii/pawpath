@@ -1,0 +1,66 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fdfdf6;
+}
+
+header {
+  background: #3a5a40;
+  color: #fdfdf6;
+  padding: 15px;
+  text-align: center;
+}
+
+.search {
+  background: #fdfdf6;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  padding: 10px;
+}
+
+input, button {
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #3a5a40;
+  border-radius: 4px;
+}
+
+button {
+  background: #6b8e23;
+  color: white;
+  cursor: pointer;
+}
+
+#map {
+  height: 50vh;
+}
+
+.clinic-list {
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+}
+
+.clinic-card {
+  padding: 10px;
+  border: 2px solid #3a5a40;
+  border-radius: 6px;
+  background: white;
+}
+
+.clinic-card h3 {
+  margin-top: 0;
+}
+
+.clinic-card button {
+  margin-top: 5px;
+  padding: 6px 10px;
+  border: none;
+  background: #3a5a40;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
