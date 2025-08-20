@@ -1,96 +1,113 @@
-// Global variables
-let map, placesService;
+let map;
+let placesService;
+let infoWindow;
+let markers = [];
 
-// Initialize the map and service after DOM load
-function initMap() {
+window.initMap = function () {
+  // Default location (Moreno Valley)
+  const defaultLocation = { lat: 33.92, lng: -117.22 };
+
   map = new google.maps.Map(document.getElementById("map"), {
-    center: { lat: 33.92, lng: -117.22 },
-    zoom: 12
+    center: defaultLocation,
+    zoom: 12,
+    mapId: "pawpathMap"
   });
+
   placesService = new google.maps.places.PlacesService(map);
+  infoWindow = new google.maps.InfoWindow();
 
-  document.getElementById("search-btn").onclick = handleSearch;
-  document.getElementById("loc-btn").onclick = handleGeolocation;
+  document.getElementById("search-btn").addEventListener("click", handleSearch);
+  document.getElementById("loc-btn").addEventListener("click", handleGeolocation);
 
-  renderClinicsOnMap(map.getCenter());  // initial load
-}
+  renderClinicsNearby(defaultLocation);
+};
 
-function renderClinicsOnMap(location) {
+function renderClinicsNearby(center) {
+  clearMarkers();
+
   const request = {
-    location,
+    location: center,
     radius: 5000,
     type: ["veterinary_care"]
   };
 
   placesService.nearbySearch(request, (results, status) => {
     if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
-      alert("No nearby veterinary clinics found.");
+      alert("No veterinary clinics found nearby.");
       return;
     }
 
-    clearMapMarkers();
-    const listEl = document.getElementById("clinic-list");
-    listEl.innerHTML = "";
+    const list = document.getElementById("clinic-list");
+    list.innerHTML = "";
 
     results.forEach(place => {
-      const marker = new google.maps.Marker({ map, position: place.geometry.location });
-      marker.addListener("click", () => showInfoWindow(place, marker));
+      const marker = new google.maps.Marker({
+        position: place.geometry.location,
+        map,
+        title: place.name
+      });
+
+      markers.push(marker);
+
+      marker.addListener("click", () => {
+        infoWindow.setContent(`<strong>${place.name}</strong><br>${place.vicinity}`);
+        infoWindow.open(map, marker);
+      });
 
       const card = document.createElement("div");
       card.className = "clinic-card";
       card.innerHTML = `
         <h3>${place.name}</h3>
         <p>${place.vicinity}</p>
-        <button onclick="openDirections(${place.geometry.location.lat()},${place.geometry.location.lng()})">
+        <button onclick="openDirections(${place.geometry.location.lat()}, ${place.geometry.location.lng()})">
           Get Directions
         </button>
       `;
-      listEl.appendChild(card);
+      list.appendChild(card);
     });
   });
 }
 
 function handleSearch() {
-  const loc = document.getElementById("location-input").value.trim();
-  if (!loc) return;
+  const query = document.getElementById("location-input").value.trim();
+  if (!query) return alert("Please enter a valid ZIP or city.");
 
-  fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(loc)}`)
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(query)}`)
     .then(res => res.json())
     .then(data => {
-      if (!data[0]) return alert("Location not found.");
-
-      const pos = {
-        lat: parseFloat(data[0].lat),
-        lng: parseFloat(data[0].lon)
-      };
-      map.setCenter(pos);
-      renderClinicsOnMap(pos);
-    });
+      if (!data || !data[0]) return alert("Location not found.");
+      const coords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+      map.setCenter(coords);
+      renderClinicsNearby(coords);
+    })
+    .catch(() => alert("Failed to fetch location. Try again."));
 }
 
 function handleGeolocation() {
-  if (!navigator.geolocation) return alert("Geolocation not supported.");
+  if (!navigator.geolocation) {
+    alert("Geolocation not supported by your browser.");
+    return;
+  }
 
   navigator.geolocation.getCurrentPosition(
     pos => {
-      const userLoc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      map.setCenter(userLoc);
-      renderClinicsOnMap(userLoc);
+      const coords = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude
+      };
+      map.setCenter(coords);
+      renderClinicsNearby(coords);
     },
     () => alert("Unable to access your location.")
   );
 }
 
 function openDirections(lat, lng) {
-  window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank");
+  const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+  window.open(url, "_blank");
 }
 
-function clearMapMarkers() {
-  // Add logic to clear existing markers if needed
-}
-
-function showInfoWindow(place, marker) {
-  new google.maps.InfoWindow({
-    content: `<div><strong>${place.name}</strong><br>${place.vicinity}</div>`
-  }).open(map, marker);
+function clearMarkers() {
+  markers.forEach(m => m.setMap(null));
+  markers = [];
 }
