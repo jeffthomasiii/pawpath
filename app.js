@@ -3,9 +3,9 @@ let placesService;
 let infoWindow;
 let markers = [];
 
+// Called by Google Maps API after loading
 window.initMap = function () {
-  // Default location (Moreno Valley)
-  const defaultLocation = { lat: 33.92, lng: -117.22 };
+  const defaultLocation = { lat: 33.92, lng: -117.22 }; // Moreno Valley default
 
   map = new google.maps.Map(document.getElementById("map"), {
     center: defaultLocation,
@@ -31,11 +31,14 @@ function renderClinicsNearby(center) {
     type: ["veterinary_care"]
   };
 
+  console.log("Search Request:", request);
+
   placesService.nearbySearch(request, (results, status) => {
-    console.log("NearbySearch status:", status, "results:", results); // ✅ Add this line
-    
+    console.log("NearbySearch status:", status);
+    console.log("NearbySearch results:", results);
+
     if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
-      alert("No veterinary clinics found nearby.");
+      alert("No veterinary clinics found nearby. (Check console for details.)");
       return;
     }
 
