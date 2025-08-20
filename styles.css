@@ -1,106 +1,137 @@
-html, body {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+/* GLOBALS */
+* {
+  box-sizing: border-box;
 }
 
-#map {
-  height: 80vh;
-  min-height: 500px;
-  width: 100%;
-}
-body {
-  font-family: Arial, sans-serif;
+body, html {
   margin: 0;
   padding: 0;
-  background: #fdfdf6;
+  font-family: 'Segoe UI', sans-serif;
+  background: #FAF9F6;
+  color: #333;
 }
 
+/* HEADER */
 header {
-  background: #3a5a40;
-  color: #fdfdf6;
-  padding: 15px;
+  background: #2F6D49;
+  color: #fff;
+  text-align: center;
+  padding: 20px 10px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 2rem;
+}
+
+.tagline {
+  margin-top: 5px;
+  font-size: 1rem;
+  color: #E8F1E5;
+}
+
+/* SEARCH SECTION */
+.search-box {
+  padding: 20px 10px;
+  background: #E8F1E5;
   text-align: center;
 }
 
-.search {
-  background: #fdfdf6;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-  padding: 10px;
+.search-box label {
+  font-weight: bold;
+  display: block;
+  margin-bottom: 8px;
 }
 
-input, button {
+.input-group {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+input {
   padding: 10px;
-  font-size: 1em;
-  border: 1px solid #3a5a40;
-  border-radius: 4px;
+  font-size: 1rem;
+  border: 2px solid #2F6D49;
+  border-radius: 6px;
+  width: 220px;
 }
 
 button {
-  background: #6b8e23;
+  background: #4B7F52;
   color: white;
+  border: none;
+  padding: 10px 16px;
+  font-size: 1rem;
+  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.2s ease-in-out;
 }
 
+button:hover {
+  background: #3f6a42;
+}
+
+/* MAP */
 #map {
   height: 50vh;
+  width: 100%;
 }
 
+/* CLINIC CARDS */
 .clinic-list {
+  padding: 20px;
   display: grid;
-  gap: 10px;
-  padding: 10px;
+  gap: 16px;
 }
 
 .clinic-card {
-  padding: 10px;
-  border: 2px solid #3a5a40;
-  border-radius: 6px;
   background: white;
+  border-left: 4px solid #2F6D49;
+  padding: 16px;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
 .clinic-card h3 {
-  margin-top: 0;
+  margin: 0 0 5px;
+}
+
+.clinic-card p {
+  margin: 4px 0;
+  font-size: 0.95rem;
 }
 
 .clinic-card button {
-  margin-top: 5px;
-  padding: 6px 10px;
-  border: none;
-  background: #3a5a40;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-}#map {
-  height: 50vh;
+  margin-top: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
 }
 
-.clinic-list {
-  display: grid;
-  gap: 10px;
-  padding: 10px;
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 15px;
+  font-size: 0.9rem;
+  color: #666;
 }
 
-.clinic-card {
-  padding: 10px;
-  border: 2px solid #3a5a40;
-  border-radius: 6px;
-  background: white;
-}
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  header h1 {
+    font-size: 1.5rem;
+  }
 
-.clinic-card h3 {
-  margin-top: 0;
-}
+  .input-group {
+    flex-direction: column;
+  }
 
-.clinic-card button {
-  margin-top: 5px;
-  padding: 6px 10px;
-  border: none;
-  background: #3a5a40;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
+  input {
+    width: 100%;
+  }
+
+  #map {
+    height: 40vh;
+  }
 }
