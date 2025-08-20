@@ -32,6 +32,8 @@ function renderClinicsNearby(center) {
   };
 
   placesService.nearbySearch(request, (results, status) => {
+    console.log("NearbySearch status:", status, "results:", results); // ✅ Add this line
+    
     if (status !== google.maps.places.PlacesServiceStatus.OK || !results) {
       alert("No veterinary clinics found nearby.");
       return;
