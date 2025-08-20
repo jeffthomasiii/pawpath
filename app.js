@@ -42,9 +42,10 @@ function renderClinics(centerCoords) {
     document.getElementById("clinic-list").appendChild(card);
   });
 
-  if (centerCoords) map.setView(centerCoords, 12);
-  
-  map.invalidateSize();
+  if (centerCoords) {
+    map.setView(centerCoords, 12);
+    setTimeout(() => map.invalidateSize(), 200);
+  }
 }
 
 window.openDirections = (lat, lng) => {
@@ -82,6 +83,7 @@ document.getElementById("loc-btn").onclick = () => {
   navigator.geolocation.getCurrentPosition(
     pos => {
       const { latitude, longitude } = pos.coords;
+      console.log(`📡 Using current location: ${latitude}, ${longitude}`);
       renderClinics([latitude, longitude]);
     },
     err => {
@@ -91,68 +93,5 @@ document.getElementById("loc-btn").onclick = () => {
   );
 };
 
-// Initial view
-renderClinics([33.92, -117.22]);    const card = document.createElement("div");
-    card.className = "clinic-card";
-    card.innerHTML = `
-      <h3>${c.name}</h3>
-      <p>${c.address}</p>
-      <p>Phone: ${c.phone}</p>
-      <button onclick="openDirections(${c.lat},${c.lng})">Get Directions</button>
-    `;
-    document.getElementById("clinic-list").appendChild(card);
-  });
-
-  if (centerCoords) map.setView(centerCoords, 12);
-}
-
-// Google Maps directions
-window.openDirections = (lat, lng) => {
-  const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-  window.open(url, '_blank');
-};
-
-// Search via input
-document.getElementById("search-btn").onclick = () => {
-  const loc = document.getElementById("location-input").value.trim();
-  if (!loc || loc.length < 3) return alert("Please enter a valid city or ZIP.");
-
-  fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(loc)}`)
-    .then(res => {
-      if (!res.ok) throw new Error("Request failed.");
-      return res.json();
-    })
-    .then(data => {
-      if (!data[0]) return alert("Location not found.");
-      const { lat, lon } = data[0];
-      console.log(`📍 Found: ${lat}, ${lon}`);
-      renderClinics([lat, lon]);
-    })
-    .catch(err => {
-      console.error("🚨 Geocode error:", err);
-      alert("Location fetch failed. Try a full city name or ZIP code.");
-    });
-};
-
-// Use current location
-document.getElementById("loc-btn").onclick = () => {
-  if (!navigator.geolocation) {
-    alert("Geolocation not supported.");
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(
-    pos => {
-      const { latitude, longitude } = pos.coords;
-      console.log(`📡 Location granted: ${latitude}, ${longitude}`);
-      renderClinics([latitude, longitude]);
-    },
-    err => {
-      console.error("❌ Geolocation error:", err);
-      alert("Unable to access your location.");
-    }
-  );
-};
-
 // Initial load
-renderClinics([33.92, -117.22]); // Moreno Valley default
+renderClinics([33.92, -117.22]);
