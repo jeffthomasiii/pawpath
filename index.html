@@ -4,8 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PawPath - Pet Clinics Near Campers</title>
+
+  <!-- Main CSS -->
   <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+  <!-- ✅ Google Maps Places API -->
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADdoYCLoMWHIWGjvq6O4EUkaxVCLLTuVo&libraries=places"></script>
 </head>
 <body>
 
@@ -14,15 +18,18 @@
   </header>
 
   <div class="search">
-    <input id="location-input" placeholder="Enter city or ZIP (e.g., 92553)" />
+    <input id="location-input" placeholder="Enter city or ZIP (e.g., 90210)" />
     <button id="search-btn">Search</button>
     <button id="loc-btn">Use My Location</button>
   </div>
 
+  <!-- Map Container -->
   <div id="map"></div>
+
+  <!-- Clinic List -->
   <div class="clinic-list" id="clinic-list"></div>
 
-  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <!-- App Logic -->
   <script src="app.js"></script>
 </body>
 </html>
