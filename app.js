@@ -3,8 +3,8 @@ let placesService;
 let infoWindow;
 let markers = [];
 
-window.initMap = () => {
-  const defaultLocation = { lat: 33.92, lng: -117.22 };
+window.initMap = function () {
+  const defaultLocation = { lat: 33.92, lng: -117.22 }; // Moreno Valley
 
   map = new google.maps.Map(document.getElementById("map"), {
     center: defaultLocation,
@@ -29,6 +29,8 @@ async function renderClinicsNearby(center) {
     type: ["veterinary_care"]
   };
 
+  console.log("Search Request:", request);
+
   try {
     const results = await nearbySearchAsync(request);
     console.log("✅ Clinics Found:", results);
@@ -38,8 +40,11 @@ async function renderClinicsNearby(center) {
 
     results.forEach(place => createMarkerAndCard(place));
   } catch (error) {
-    console.error("❌ Nearby Search Error:", error);
-    alert(`Could not load clinics nearby. (${error.status || "Unknown Error"})`);
+    console.error("❌ Nearby Search Failed", {
+      status: error.status,
+      results: error.results
+    });
+    alert(`Could not load clinics. API status: ${error.status}`);
   }
 }
 
@@ -61,6 +66,7 @@ function createMarkerAndCard(place) {
     map,
     title: place.name
   });
+
   markers.push(marker);
 
   marker.addListener("click", () => {
@@ -80,22 +86,19 @@ function createMarkerAndCard(place) {
   document.getElementById("clinic-list").appendChild(card);
 }
 
-async function handleSearch() {
+function handleSearch() {
   const query = document.getElementById("location-input").value.trim();
   if (!query) return alert("Please enter a valid ZIP or city.");
 
-  try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(query)}`);
-    const data = await res.json();
-    if (!data || !data[0]) throw new Error("Location not found");
-
-    const coords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-    map.setCenter(coords);
-    renderClinicsNearby(coords);
-  } catch (err) {
-    console.error("❌ Location search failed:", err);
-    alert("Failed to find location. Try a different ZIP or city.");
-  }
+  fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(query)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data || !data[0]) return alert("Location not found.");
+      const coords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
+      map.setCenter(coords);
+      renderClinicsNearby(coords);
+    })
+    .catch(() => alert("Failed to fetch location. Try again."));
 }
 
 function handleGeolocation() {
@@ -113,10 +116,7 @@ function handleGeolocation() {
       map.setCenter(coords);
       renderClinicsNearby(coords);
     },
-    err => {
-      console.error("❌ Geolocation error:", err);
-      alert("Unable to access your location.");
-    }
+    () => alert("Unable to access your location.")
   );
 }
 
