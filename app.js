@@ -1,21 +1,28 @@
 let map, infoWindow, markers = [], Place;
 
-window.initMap = async function () {
-  // Dynamically load the Places library and get the Place class
-  const placesLib = await google.maps.importLibrary('places');
+async function initApp() {
+  // Dynamically import the places library
+  const placesLib = await google.maps.importLibrary("places");
   Place = placesLib.Place;
 
+  // Map setup
   const defaultLoc = { lat: 33.92, lng: -117.22 };
   map = new google.maps.Map(document.getElementById("map"), {
-    center: defaultLoc, zoom: 12
+    center: defaultLoc,
+    zoom: 12
   });
   infoWindow = new google.maps.InfoWindow();
 
+  // Event listeners
   document.getElementById("search-btn").onclick = handleSearch;
   document.getElementById("loc-btn").onclick = handleGeolocation;
 
+  // Initial search
   await renderClinicsNearby(defaultLoc);
-};
+}
+
+// Replace callback logic with an async start function
+window.initMap = initApp;
 
 async function renderClinicsNearby(center) {
   clearMarkers();
@@ -26,10 +33,10 @@ async function renderClinicsNearby(center) {
     fields: ["name", "geometry", "vicinity"]
   }).catch(err => {
     console.error("Search Error:", err);
-    alert("Clinic search failed — check console.");
+    alert("Clinic search failed — see console for details.");
   });
 
-  if (!results || results.length === 0) {
+  if (!results || !results.length) {
     alert("No clinics found nearby.");
     return;
   }
@@ -54,7 +61,7 @@ async function renderClinicsNearby(center) {
     card.innerHTML = `
       <h3>${place.name}</h3>
       <p>${place.vicinity}</p>
-      <button onclick="openDirections(${place.geometry.location.lat()},${place.geometry.location.lng()})">
+      <button onclick="openDirections(${place.geometry.location.lat()}, ${place.geometry.location.lng()})">
         Get Directions
       </button>`;
     listEl.appendChild(card);
@@ -66,7 +73,7 @@ async function handleSearch() {
   if (!query) return alert("Enter a city or ZIP.");
 
   try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&countrycodes=us`);
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(query)}`);
     const data = await res.json();
     if (!data[0]) throw new Error("Location not found");
     const coords = { lat: +data[0].lat, lng: +data[0].lon };
@@ -79,8 +86,9 @@ async function handleSearch() {
 }
 
 function handleGeolocation() {
-  if (!navigator.geolocation) return alert("Geolocation not supported.");
-
+  if (!navigator.geolocation) {
+    return alert("Geolocation not supported.");
+  }
   navigator.geolocation.getCurrentPosition(async pos => {
     const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
     map.setCenter(coords);
