@@ -1,4 +1,5 @@
-let map, infoWindow, markers = [];
+(() => {
+  let map, infoWindow, markers = [];
 
 async function initApp() {
   const placesLib = await google.maps.importLibrary("places");
@@ -106,3 +107,4 @@ function clearMarkers() {
   markers.forEach(m => m.setMap(null));
   markers = [];
 }
+})();
