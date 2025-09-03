@@ -1,22 +1,17 @@
-let map;
-let infoWindow;
-let markers = [];
+let map, infoWindow, markers = [];
 
 window.initApp = async function () {
-  const defaultCenter = { lat: 33.92, lng: -117.22 };
-
+  const defaultLoc = { lat: 33.92, lng: -117.22 };
   map = new google.maps.Map(document.getElementById("map"), {
-    center: defaultCenter,
+    center: defaultLoc,
     zoom: 12,
-    mapId: "pawpathMap"
   });
-
   infoWindow = new google.maps.InfoWindow();
 
-  document.getElementById("search-btn").addEventListener("click", handleSearch);
-  document.getElementById("loc-btn").addEventListener("click", handleGeolocation);
+  document.getElementById("search-btn").onclick = handleSearch;
+  document.getElementById("loc-btn").onclick = handleGeolocation;
 
-  await renderClinicsNearby(defaultCenter);
+  await renderClinicsNearby(defaultLoc);
 };
 
 async function renderClinicsNearby(center) {
@@ -24,99 +19,92 @@ async function renderClinicsNearby(center) {
   document.getElementById("clinic-list").innerHTML = "";
 
   try {
-    const { Place } = await google.maps.importLibrary("places");
+    const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary('places');
 
     const request = {
-      locationBias: {
-        radius: 5000,
-        center: center
+      locationRestriction: {
+        circle: {
+          center: { latitude: center.lat, longitude: center.lng },
+          radius: 5000
+        }
       },
-      includedTypes: ["veterinary_care"]
+      includedTypes: ["veterinary_care"],
+      maxResultCount: 10,
+      rankPreference: SearchNearbyRankPreference.PROMINENCE
     };
 
-    console.log("📍 Search Request:", request);
-
-    const place = new Place({ locationBias: request.locationBias });
-    const response = await place.searchNearby(request);
+    console.log("Nearby request:", request);
+    const response = await Place.searchNearby(request);
 
     if (!response.places || response.places.length === 0) {
       alert("No clinics found nearby.");
       return;
     }
 
-    response.places.forEach((p) => {
-      const marker = new google.maps.Marker({
-        position: p.location,
-        map,
-        title: p.displayName?.text || "Clinic"
-      });
-
+    response.places.forEach(p => {
+      const coords = { lat: p.location.latitude, lng: p.location.longitude };
+      const marker = new google.maps.Marker({ position: coords, map, title: p.displayName });
       markers.push(marker);
 
       marker.addListener("click", () => {
-        infoWindow.setContent(`<strong>${p.displayName?.text}</strong><br>${p.formattedAddress || ""}`);
+        infoWindow.setContent(`<strong>${p.displayName}</strong><br>${p.formattedAddress || ""}`);
         infoWindow.open(map, marker);
       });
 
       const card = document.createElement("div");
       card.className = "clinic-card";
       card.innerHTML = `
-        <h3>${p.displayName?.text || "Veterinary Clinic"}</h3>
-        <p>${p.formattedAddress || "No address available"}</p>
-        <button onclick="openDirections(${p.location.lat}, ${p.location.lng})">Get Directions</button>
+        <h3>${p.displayName}</h3>
+        <p>${p.formattedAddress || "Address not available"}</p>
+        <button onclick="openDirections(${coords.lat},${coords.lng})">Get Directions</button>
       `;
       document.getElementById("clinic-list").appendChild(card);
     });
 
   } catch (err) {
-    console.error("🚨 Error during nearby search:", err);
-    alert("Failed to load clinics nearby. Please try again.");
+    console.error("Nearby search failed:", err);
+    alert("Search for clinics failed—check the console for details.");
   }
 }
 
 function openDirections(lat, lng) {
-  const url = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-  window.open(url, "_blank");
+  window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank");
 }
 
-function handleSearch() {
-  const query = document.getElementById("location-input").value.trim();
-  if (!query) return alert("Please enter a valid location.");
+async function handleSearch() {
+  const q = document.getElementById("location-input").value.trim();
+  if (!q) return alert("Please enter a city or ZIP.");
 
-  fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(query)}`)
-    .then(res => res.json())
-    .then(data => {
-      if (!data[0]) return alert("Location not found.");
-      const coords = { lat: parseFloat(data[0].lat), lng: parseFloat(data[0].lon) };
-      map.setCenter(coords);
-      renderClinicsNearby(coords);
-    })
-    .catch(err => {
-      console.error("🌐 Geocoding error:", err);
-      alert("Failed to fetch location. Try again.");
-    });
+  try {
+    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(q)}`);
+    const data = await res.json();
+    const loc = data[0];
+    if (!loc) throw new Error("Location not found");
+
+    const coords = { lat: +loc.lat, lng: +loc.lon };
+    map.setCenter(coords);
+    await renderClinicsNearby(coords);
+  } catch (err) {
+    console.error("Search error:", err);
+    alert("Could not find location.");
+  }
 }
 
 function handleGeolocation() {
-  if (!navigator.geolocation) return alert("Geolocation not supported.");
-
+  if (!navigator.geolocation) {
+    return alert("Geolocation not supported.");
+  }
   navigator.geolocation.getCurrentPosition(
-    pos => {
-      const coords = {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude
-      };
+    async pos => {
+      const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
       map.setCenter(coords);
-      renderClinicsNearby(coords);
+      await renderClinicsNearby(coords);
     },
-    err => {
-      console.error("📍 Geolocation error:", err);
-      alert("Unable to retrieve your location.");
-    }
+    () => alert("Unable to access location.")
   );
 }
 
 function clearMarkers() {
-  markers.forEach(marker => marker.setMap(null));
+  markers.forEach(m => m.setMap(null));
   markers = [];
 }
