@@ -2,10 +2,12 @@ let map, infoWindow, markers = [];
 
 window.initApp = async function () {
   const defaultLoc = { lat: 33.92, lng: -117.22 };
+
   map = new google.maps.Map(document.getElementById("map"), {
     center: defaultLoc,
     zoom: 12,
   });
+
   infoWindow = new google.maps.InfoWindow();
 
   document.getElementById("search-btn").onclick = handleSearch;
@@ -19,7 +21,7 @@ async function renderClinicsNearby(center) {
   document.getElementById("clinic-list").innerHTML = "";
 
   try {
-    const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary('places');
+    const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary("places");
 
     const request = {
       locationRestriction: {
@@ -30,7 +32,8 @@ async function renderClinicsNearby(center) {
       },
       includedTypes: ["veterinary_care"],
       maxResultCount: 10,
-      rankPreference: SearchNearbyRankPreference.PROMINENCE
+      rankPreference: SearchNearbyRankPreference.PROMINENCE,
+      fields: ["displayName", "location", "formattedAddress"]
     };
 
     console.log("Nearby request:", request);
@@ -42,8 +45,17 @@ async function renderClinicsNearby(center) {
     }
 
     response.places.forEach(p => {
-      const coords = { lat: p.location.latitude, lng: p.location.longitude };
-      const marker = new google.maps.Marker({ position: coords, map, title: p.displayName });
+      const coords = {
+        lat: p.location.latitude,
+        lng: p.location.longitude
+      };
+
+      const marker = new google.maps.Marker({
+        position: coords,
+        map,
+        title: p.displayName
+      });
+
       markers.push(marker);
 
       marker.addListener("click", () => {
@@ -56,8 +68,9 @@ async function renderClinicsNearby(center) {
       card.innerHTML = `
         <h3>${p.displayName}</h3>
         <p>${p.formattedAddress || "Address not available"}</p>
-        <button onclick="openDirections(${coords.lat},${coords.lng})">Get Directions</button>
+        <button onclick="openDirections(${coords.lat}, ${coords.lng})">Get Directions</button>
       `;
+
       document.getElementById("clinic-list").appendChild(card);
     });
 
@@ -94,9 +107,13 @@ function handleGeolocation() {
   if (!navigator.geolocation) {
     return alert("Geolocation not supported.");
   }
+
   navigator.geolocation.getCurrentPosition(
     async pos => {
-      const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+      const coords = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude
+      };
       map.setCenter(coords);
       await renderClinicsNearby(coords);
     },
