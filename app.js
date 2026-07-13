@@ -188,18 +188,18 @@ async function fetchVeterinaryClinics(center) {
 
   const data = await response.json();
   return data.elements
-    .map(normalizeClinic)
+    .map((item) => normalizeClinic(item, center))
     .filter(Boolean)
     .sort((a, b) => a.distanceMiles - b.distanceMiles);
 }
 
-function normalizeClinic(item) {
+function normalizeClinic(item, searchCenter) {
   const lat = item.lat ?? item.center?.lat;
   const lng = item.lon ?? item.center?.lon;
   if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
 
   const tags = item.tags || {};
-  const name = tags.name || tags["operator"] || "Veterinary clinic";
+  const name = tags.name || tags.operator || "Veterinary clinic";
   const address = formatAddress(tags);
   const phone = tags.phone || tags["contact:phone"] || "";
   const website = normalizeWebsite(tags.website || tags["contact:website"] || "");
@@ -214,7 +214,7 @@ function normalizeClinic(item) {
     emergency,
     lat,
     lng,
-    distanceMiles: haversineMiles(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng, lat, lng),
+    distanceMiles: haversineMiles(searchCenter.lat, searchCenter.lng, lat, lng),
   };
 }
 
@@ -312,6 +312,7 @@ function createClinicCard(clinic) {
       </span>
     </div>
     <div class="card-meta">
+      <span>${clinic.distanceMiles.toFixed(1)} mi away</span>
       ${clinic.phone ? `<span>☎ ${escapeHtml(clinic.phone)}</span>` : ""}
       ${clinic.website ? `<a href="${escapeAttribute(clinic.website)}" target="_blank" rel="noopener noreferrer">Website</a>` : ""}
     </div>
