@@ -70,12 +70,22 @@ The `v0.2 – Care Plan POC` phase will add:
 
 See [Proof-of-Concept Scope](docs/POC_SCOPE.md) and [Roadmap](docs/ROADMAP.md).
 
+## Active development
+
+Phase 1 work is tracked in the [`v0.2 Care Plan POC` tracking issue](https://github.com/jeffthomasiii/pawpath/issues/13), with one issue for each feature package and its acceptance criteria.
+
+The first implementation task is [POC-01: Add Plan a Trip and Find Care Now modes](https://github.com/jeffthomasiii/pawpath/issues/4).
+
 ## Product documentation
 
+- [Documentation Index](docs/README.md) — recommended reading order
 - [Why PawPath?](docs/WHY_PAWPATH.md) — product distinction, audience, value proposition, and messaging
 - [Product Vision](docs/PRODUCT_VISION.md) — mission, users, jobs to be done, principles, and success criteria
 - [Proof-of-Concept Scope](docs/POC_SCOPE.md) — required capabilities and acceptance criteria for the shareable POC
 - [Roadmap](docs/ROADMAP.md) — phased product and development plan
+- [Phase 1 Backlog](docs/BACKLOG.md) — prioritized POC work packages
+- [Phase 1 Release Plan](docs/PHASE_1_RELEASE_PLAN.md) — increments, release gate, and manual checklist
+- [Implementation Notes](docs/IMPLEMENTATION_NOTES.md) — data objects, state model, storage, confidence logic, and file guidance
 - [Demo Script](docs/DEMO_SCRIPT.md) — two-minute walkthrough and early-user feedback questions
 
 ## Technologies
@@ -96,7 +106,7 @@ PawPath does not require a Google Maps API key. Google Maps is currently used on
 ```text
 pawpath/
 ├── assets/                  # PawPath logo and brand assets
-├── docs/                    # Product vision, POC scope, roadmap, and demo documentation
+├── docs/                    # Product vision, POC scope, roadmap, backlog, and demo documentation
 ├── index.html               # Semantic application layout
 ├── styles.css               # Core responsive design system and components
 ├── site-fixes.css           # Map and brand-layout corrections
