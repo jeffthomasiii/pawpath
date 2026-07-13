@@ -1,48 +1,120 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PawPath - Pet Clinics Near Campers</title>
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Find nearby veterinary clinics and emergency animal hospitals while traveling with pets."
+    />
+    <meta name="theme-color" content="#173f35" />
+    <title>PawPath | Veterinary care wherever you roam</title>
 
-  <header>
-    <h1>🐾 PawPath</h1>
-    <p class="tagline">Find pet clinics, anywhere you roam 🏕️</p>
-  </header>
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link rel="preconnect" href="https://tile.openstreetmap.org" />
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIINfQ3ynhHDpRss0fKt9mLxkL7R2l1Hqvs="
+      crossorigin=""
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
 
-  <section class="search-box">
-    <label for="location-input">Search by City or ZIP</label>
-    <div class="input-group">
-      <input id="location-input" placeholder="e.g., 90210 or Denver" />
-      <button id="search-btn">🔍 Search</button>
-      <button id="loc-btn">📍 Use My Location</button>
-    </div>
-  </section>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <div id="map"></div>
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="PawPath home">
+        <span class="brand-mark" aria-hidden="true">🐾</span>
+        <span>
+          <strong>PawPath</strong>
+          <small>Veterinary care wherever you roam</small>
+        </span>
+      </a>
+      <span class="status-badge">Free map access</span>
+    </header>
 
-  <section class="clinic-list" id="clinic-list">
-    <!-- Clinic cards injected here -->
-  </section>
+    <main id="main-content" class="app-shell">
+      <section class="hero-panel" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Built for road trips, campgrounds, and everyday adventures</p>
+          <h1 id="page-title">Find trusted pet care nearby.</h1>
+          <p>
+            Search any U.S. city or ZIP code, or use your current location to find veterinary clinics and
+            emergency animal hospitals.
+          </p>
+        </div>
 
-  <footer>
-    <p>Built for campers & pet lovers. 🐶🐾</p>
-  </footer>
+        <form id="search-form" class="search-card" novalidate>
+          <label for="location-input">Where are you traveling?</label>
+          <div class="search-row">
+            <div class="input-wrap">
+              <span aria-hidden="true">⌕</span>
+              <input
+                id="location-input"
+                name="location"
+                type="search"
+                autocomplete="postal-code"
+                placeholder="City, state, or ZIP code"
+              />
+            </div>
+            <button class="button button-primary" type="submit" id="search-btn">Search</button>
+            <button class="button button-secondary" type="button" id="loc-btn">
+              <span aria-hidden="true">◎</span>
+              Use my location
+            </button>
+          </div>
+          <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
+        </form>
+      </section>
 
-  <!-- JS Scripts -->
-  <script src="app.js"></script>
-  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyADdoYCLoMWHIWGjvq6O4EUkaxVCLLTuVo&libraries=places"></script>
-  <script>
-    window.addEventListener("load", () => {
-      if (window.google && google.maps) {
-        initApp(); // Call your function after maps is available
-      } else {
-        console.error("❌ Google Maps failed to load.");
-      }
-    });
-  </script>
-</body>
+      <section class="discovery-layout" aria-label="Veterinary clinic finder">
+        <aside class="results-panel" aria-labelledby="results-title">
+          <div class="results-heading">
+            <div>
+              <p class="eyebrow">Nearby care</p>
+              <h2 id="results-title">Veterinary clinics</h2>
+            </div>
+            <span id="result-count" class="result-count">Loading…</span>
+          </div>
+
+          <div class="filter-row" aria-label="Clinic filters">
+            <button class="filter-chip is-active" type="button" data-filter="all" aria-pressed="true">All care</button>
+            <button class="filter-chip" type="button" data-filter="emergency" aria-pressed="false">Emergency</button>
+            <button class="filter-chip" type="button" data-filter="routine" aria-pressed="false">Routine</button>
+          </div>
+
+          <div id="clinic-list" class="clinic-list" aria-live="polite"></div>
+        </aside>
+
+        <section class="map-panel" aria-label="Map of veterinary clinics">
+          <div id="map" role="application" aria-label="Interactive map showing nearby veterinary clinics"></div>
+          <div class="map-note">
+            <strong>Map data:</strong> OpenStreetMap contributors. Clinic details may be incomplete; call ahead when possible.
+          </div>
+        </section>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>Built for campers, travelers, and the pets who come along.</p>
+      <p>© <span id="current-year"></span> PawPath</p>
+    </footer>
+
+    <template id="empty-state-template">
+      <div class="empty-state">
+        <span aria-hidden="true">🐕</span>
+        <h3>No clinics found in this area</h3>
+        <p>Try another city or ZIP code, or widen your search by moving the map.</p>
+      </div>
+    </template>
+
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+    <script src="app.js" defer></script>
+  </body>
 </html>
