@@ -58,7 +58,7 @@ function initApp() {
 
 function cacheElements() {
   elements.heroPanel = document.getElementById("hero-panel");
-  elements.modeButtons = [...document.querySelectorAll("[data-mode]")];
+  elements.modeButtons = [...document.querySelectorAll(".mode-option[data-mode]")];
   elements.modeStatus = document.getElementById("mode-status");
   elements.heroEyebrow = document.getElementById("hero-eyebrow");
   elements.pageTitle = document.getElementById("page-title");
