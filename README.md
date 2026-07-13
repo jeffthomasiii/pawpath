@@ -1,14 +1,49 @@
-# 🐾 PawPath
+# PawPath
 
-**PawPath** is a lightweight, mobile-friendly web app for campers and travelers with pets. It helps users find nearby veterinary clinics and emergency animal hospitals by searching a U.S. city or ZIP code or by using the device's current location.
+**Pet-care preparedness for the road.**
 
-> 🚐 Whether you are off the grid or parked at a scenic campsite, PawPath helps you locate pet care when you need it.
+PawPath is a mobile-friendly web application for campers, RV travelers, road-trippers, and other people traveling with pets. It is being developed to help users identify, evaluate, and save veterinary and emergency-care options near a destination before care is needed.
 
-## 🌐 Live Demo
+> **Google Maps and Apple Maps help people find places. PawPath helps people traveling with pets make a care plan and act quickly when something goes wrong.**
+
+## Live proof of concept
 
 [Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
-## Features
+The current proof of concept establishes the mapping and live-search foundation. The next development phase will add trip care plans, primary and backup facility selection, confidence indicators, Emergency Mode, and a printable emergency card.
+
+## Why PawPath?
+
+A general map search can show nearby veterinary businesses, but travelers still have to determine:
+
+- Which facility provides routine, urgent, or emergency care
+- Whether the information is current or incomplete
+- Which facility should be the primary option
+- What the backup option should be
+- How far care is from a campground or destination
+- What number to call before driving
+- Where essential pet information will be during an urgent situation
+- What should be saved before entering an area with weak connectivity
+
+PawPath is designed around that missing planning and emergency-readiness workflow.
+
+**The intended outcome is not simply a map search. The intended outcome is a saved pet-care plan for the trip.**
+
+Read the complete positioning in [Why PawPath?](docs/WHY_PAWPATH.md).
+
+## Product direction
+
+PawPath is organized around two core experiences:
+
+### Plan a Trip
+
+Search around a campground, destination, ZIP code, or overnight stop; review care options; choose a primary facility and backup; and save the essential details before leaving.
+
+### Find Care Now
+
+Use the current location to prioritize likely emergency-care options and quickly access call, directions, backup, and saved pet-information actions.
+
+## Current capabilities
 
 - Search by U.S. city, state, or ZIP code
 - Use browser geolocation to search near the current position
@@ -18,6 +53,30 @@
 - Open driving directions without embedding a paid map service
 - Responsive desktop, tablet, and mobile layouts
 - Keyboard-accessible controls, cards, and map markers
+- PawPath branded header and favicon
+
+## Next proof-of-concept capabilities
+
+The `v0.2 – Care Plan POC` phase will add:
+
+- Plan a Trip and Find Care Now modes
+- Facility-detail panels
+- Care-type and confidence indicators
+- Primary and backup facility selection
+- One locally saved active trip plan
+- Emergency Mode
+- Curated demonstration data
+- Printable emergency card
+
+See [Proof-of-Concept Scope](docs/POC_SCOPE.md) and [Roadmap](docs/ROADMAP.md).
+
+## Product documentation
+
+- [Why PawPath?](docs/WHY_PAWPATH.md) — product distinction, audience, value proposition, and messaging
+- [Product Vision](docs/PRODUCT_VISION.md) — mission, users, jobs to be done, principles, and success criteria
+- [Proof-of-Concept Scope](docs/POC_SCOPE.md) — required capabilities and acceptance criteria for the shareable POC
+- [Roadmap](docs/ROADMAP.md) — phased product and development plan
+- [Demo Script](docs/DEMO_SCRIPT.md) — two-minute walkthrough and early-user feedback questions
 
 ## Technologies
 
@@ -26,22 +85,28 @@
 - JavaScript
 - [Leaflet 1.9.4](https://leafletjs.com/) for the interactive map
 - [OpenStreetMap](https://www.openstreetmap.org/) map tiles and clinic data
-- [Nominatim](https://nominatim.org/) for city and ZIP-code geocoding
-- [Overpass API](https://overpass-api.de/) for nearby veterinary-clinic queries
+- [Nominatim](https://nominatim.org/) for destination geocoding
+- [Overpass API](https://overpass-api.de/) for nearby veterinary-facility queries
+- Browser `localStorage` planned for the first saved care-plan implementation
 
-PawPath does not require a Google Maps API key. Google Maps is only used as an external destination for the **Directions** link.
+PawPath does not require a Google Maps API key. Google Maps is currently used only as an external destination for the **Directions** link.
 
-## Project Structure
+## Project structure
 
 ```text
 pawpath/
-├── index.html        # Semantic application layout
-├── styles.css        # Responsive design system and components
-├── app.js            # Leaflet, geocoding, clinic search, filters, and UI state
-└── README.md         # Project documentation
+├── assets/                  # PawPath logo and brand assets
+├── docs/                    # Product vision, POC scope, roadmap, and demo documentation
+├── index.html               # Semantic application layout
+├── styles.css               # Core responsive design system and components
+├── site-fixes.css           # Map and brand-layout corrections
+├── leaflet-local.css        # Locally hosted Leaflet layout styles
+├── app.js                   # Map, geocoding, clinic search, filters, and UI state
+├── map-layout-fix.js        # Defensive Leaflet resize handling
+└── README.md                # Project overview
 ```
 
-## Getting Started Locally
+## Getting started locally
 
 1. Clone the repository:
 
@@ -60,34 +125,28 @@ pawpath/
 
 A local server is recommended because browser geolocation and remote API requests may not work correctly when the page is opened directly from the file system.
 
-## Public API Usage and Fair Use
+## Public API usage and fair use
 
-PawPath currently relies on public OpenStreetMap infrastructure. These services are appropriate for a lightweight proof of concept, but they are not unlimited production APIs.
+PawPath currently relies on public OpenStreetMap infrastructure. These services are suitable for a lightweight proof of concept but are not unlimited production APIs.
 
 - Do not bulk download or prefetch OpenStreetMap tiles.
 - Avoid rapid or automated repeated searches.
 - Preserve OpenStreetMap attribution on the map.
 - Clinic data can be incomplete or outdated; users should call ahead when possible.
-- Before significant production traffic, configure dedicated geocoding, tile, and place-data providers with appropriate service agreements.
+- Before significant production traffic, configure dedicated geocoding, tile, and facility-data providers with appropriate service agreements.
+
+## Trust and safety boundaries
+
+PawPath is not a veterinary diagnosis or medical-triage service. It does not guarantee that a facility is open, available, or able to treat a specific animal or condition. The product should clearly identify uncertain or incomplete information and encourage users to call facilities before traveling.
 
 ## Privacy
 
-Location information is used in the browser to perform the requested nearby search. PawPath does not currently maintain a backend or store the user's location.
-
-## Roadmap
-
-- [ ] Add configurable map, tile, geocoding, and place-data providers
-- [ ] Add a production-ready veterinary data source
-- [ ] Add richer emergency-service verification
-- [ ] Add clinic hours and open-now status where reliable
-- [ ] Add saved clinics and recent searches
-- [ ] Add installable progressive-web-app support
-- [ ] Add automated accessibility and browser testing
+Location information is used in the browser to perform the requested nearby search. PawPath does not currently maintain a backend or store the user’s location. The first saved-plan implementation is intended to remain on the user’s device through browser `localStorage`.
 
 ## License
 
 MIT License — free to use, adapt, and share.
 
-## Built By
+## Built by
 
 [Jeff Thomas III](https://github.com/jeffthomasiii)
