@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 180" role="img" aria-labelledby="title desc">
+  <title id="title">PawPath</title>
+  <desc id="desc">PawPath logo with a paw-shaped location marker, winding path, and veterinary cross.</desc>
+  <defs>
+    <linearGradient id="hill" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#b9cdbd"/>
+      <stop offset="1" stop-color="#7f9d88"/>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(4 0)">
+    <path fill="#123f35" d="M90 8c-43 0-72 28-72 69 0 45 42 76 72 96 30-20 72-51 72-96C162 36 133 8 90 8Z"/>
+    <ellipse cx="55" cy="52" rx="15" ry="23" transform="rotate(-24 55 52)" fill="#b9cdbd"/>
+    <ellipse cx="82" cy="40" rx="14" ry="24" transform="rotate(-6 82 40)" fill="#b9cdbd"/>
+    <ellipse cx="110" cy="40" rx="14" ry="24" transform="rotate(6 110 40)" fill="#b9cdbd"/>
+    <ellipse cx="136" cy="54" rx="15" ry="23" transform="rotate(24 136 54)" fill="#b9cdbd"/>
+    <path fill="url(#hill)" d="M43 124c18-20 33-28 49-29 17-1 28 6 45 22 8 8 14 14 18 18-16 17-42 37-65 52-20-13-42-29-59-45 4-5 8-11 12-18Z" opacity=".94"/>
+    <path fill="#fff" d="M62 94c13-10 25-14 38-13 13 1 22 7 31 16-12-3-22-2-31 3-12 7-18 18-20 33-2 15 4 27 13 39-10-7-19-13-28-20-8-17-10-31-5-43 3-7 8-12 15-17-5 0-9 1-13 2Z"/>
+    <path fill="#d8943f" d="M90 70c-14 0-25 11-25 25 0 18 25 35 25 35s25-17 25-35c0-14-11-25-25-25Z"/>
+    <rect x="85" y="81" width="10" height="28" rx="2" fill="#fff"/>
+    <rect x="76" y="90" width="28" height="10" rx="2" fill="#fff"/>
+    <ellipse cx="90" cy="171" rx="39" ry="5" fill="#b9cdbd" opacity=".42"/>
+  </g>
+
+  <text x="198" y="118" font-family="Inter, Avenir Next, Segoe UI, Arial, sans-serif" font-size="92" font-weight="800" letter-spacing="-5">
+    <tspan fill="#123f35">Paw</tspan><tspan fill="#8aa58f">Path</tspan>
+  </text>
+</svg>
