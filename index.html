@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Find nearby veterinary clinics and emergency animal hospitals while traveling with pets."
+      content="Plan veterinary and emergency pet-care options before a trip, or find nearby care when you need it."
     />
     <meta name="theme-color" content="#173f35" />
-    <title>PawPath | Veterinary care wherever you roam</title>
+    <title>PawPath | Pet-care preparedness for the road</title>
 
     <link rel="icon" href="assets/PawPath_mark_transparent.png" type="image/png" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
@@ -24,24 +24,41 @@
     <header class="site-header">
       <a class="brand" href="./" aria-label="PawPath home">
         <img class="brand-logo" src="assets/PawPath_logo_Transparent.png" alt="PawPath" />
-        <span class="brand-tagline">Veterinary care wherever you roam</span>
+        <span class="brand-tagline">Pet-care preparedness for the road</span>
       </a>
       <span class="status-badge">Free map access</span>
     </header>
 
     <main id="main-content" class="app-shell">
-      <section class="hero-panel" aria-labelledby="page-title">
+      <section id="hero-panel" class="hero-panel" data-mode="plan" aria-labelledby="page-title">
+        <div class="mode-selector" role="group" aria-label="Choose how you want to use PawPath">
+          <button class="mode-option is-active" type="button" data-mode="plan" aria-pressed="true">
+            <span class="mode-option-icon" aria-hidden="true">⌖</span>
+            <span>
+              <strong>Plan a Trip</strong>
+              <small>Prepare care options before you leave.</small>
+            </span>
+          </button>
+          <button class="mode-option" type="button" data-mode="now" aria-pressed="false">
+            <span class="mode-option-icon" aria-hidden="true">✚</span>
+            <span>
+              <strong>Find Care Now</strong>
+              <small>Quickly search around your current location.</small>
+            </span>
+          </button>
+        </div>
+
         <div class="hero-copy">
-          <p class="eyebrow">Built for road trips, campgrounds, and everyday adventures</p>
-          <h1 id="page-title">Find trusted pet care nearby.</h1>
-          <p>
-            Search any U.S. city or ZIP code, or use your current location to find veterinary clinics and
-            emergency animal hospitals.
+          <p id="hero-eyebrow" class="eyebrow">Pet-care preparedness for the road</p>
+          <h1 id="page-title">Make a pet-care plan before you travel.</h1>
+          <p id="hero-description">
+            Search a campground, destination, city, or ZIP code. Review nearby veterinary care now so you know
+            where to call and where to go before your trip begins.
           </p>
         </div>
 
         <form id="search-form" class="search-card" novalidate>
-          <label for="location-input">Where are you traveling?</label>
+          <label id="location-label" for="location-input">Where are you going?</label>
           <div class="search-row">
             <div class="input-wrap">
               <span aria-hidden="true">⌕</span>
@@ -50,25 +67,31 @@
                 name="location"
                 type="search"
                 autocomplete="postal-code"
-                placeholder="City, state, or ZIP code"
+                placeholder="Campground, city, state, or ZIP code"
               />
             </div>
-            <button class="button button-primary" type="submit" id="search-btn">Search</button>
+            <button class="button button-primary" type="submit" id="search-btn">
+              <span id="search-button-label">Explore destination</span>
+            </button>
             <button class="button button-secondary" type="button" id="loc-btn">
               <span aria-hidden="true">◎</span>
-              Use my location
+              <span id="location-button-label">Use current location instead</span>
             </button>
           </div>
+          <p id="mode-guidance" class="mode-guidance">
+            Start with where you will stay. PawPath will show care options near that destination.
+          </p>
           <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
         </form>
+        <p id="mode-status" class="sr-only" aria-live="polite"></p>
       </section>
 
       <section class="discovery-layout" aria-label="Veterinary clinic finder">
         <aside class="results-panel" aria-labelledby="results-title">
           <div class="results-heading">
             <div>
-              <p class="eyebrow">Nearby care</p>
-              <h2 id="results-title">Veterinary clinics</h2>
+              <p id="results-eyebrow" class="eyebrow">Trip planning</p>
+              <h2 id="results-title">Care options near Moreno Valley, California</h2>
             </div>
             <span id="result-count" class="result-count">Loading…</span>
           </div>
