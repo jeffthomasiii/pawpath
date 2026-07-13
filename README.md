@@ -1,95 +1,93 @@
 # 🐾 PawPath
 
-**PawPath** is a lightweight, mobile-friendly web app built for **campers traveling with pets**. It helps users quickly find nearby veterinary clinics and emergency animal hospitals, either by entering a city or ZIP code or using their current location.
+**PawPath** is a lightweight, mobile-friendly web app for campers and travelers with pets. It helps users find nearby veterinary clinics and emergency animal hospitals by searching a U.S. city or ZIP code or by using the device's current location.
 
-> 🚐 Whether you’re off the grid or parked at a scenic campsite, PawPath helps ensure your furry friends stay safe and healthy on the road.
-
+> 🚐 Whether you are off the grid or parked at a scenic campsite, PawPath helps you locate pet care when you need it.
 
 ## 🌐 Live Demo
 
-Try it here:  
-👉 [https://jeffthomasiii.github.io/pawpath/](https://jeffthomasiii.github.io/pawpath/)
+[Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
+## Features
 
-## 📦 Features
+- Search by U.S. city, state, or ZIP code
+- Use browser geolocation to search near the current position
+- View veterinary clinics on an interactive Leaflet map
+- Filter results between all care, emergency, and routine clinics
+- Select a clinic card to center and open its map marker
+- Open driving directions without embedding a paid map service
+- Responsive desktop, tablet, and mobile layouts
+- Keyboard-accessible controls, cards, and map markers
 
-- 🔍 Search by **city or ZIP code**
-- 📍 Use **geolocation** to find nearby pet clinics
-- 🗺 View clinic locations on an interactive map
-- 🧭 Open **Google Maps driving directions** with one click
-- 🐶 Lists both **routine vet care** and **emergency services**
+## Technologies
 
+- HTML
+- CSS
+- JavaScript
+- [Leaflet 1.9.4](https://leafletjs.com/) for the interactive map
+- [OpenStreetMap](https://www.openstreetmap.org/) map tiles and clinic data
+- [Nominatim](https://nominatim.org/) for city and ZIP-code geocoding
+- [Overpass API](https://overpass-api.de/) for nearby veterinary-clinic queries
 
-## 🛠 Technologies Used
+PawPath does not require a Google Maps API key. Google Maps is only used as an external destination for the **Directions** link.
 
-- **HTML**, **CSS**, **JavaScript**
-- [Leaflet.js](https://leafletjs.com/) for maps
-- [OpenStreetMap](https://www.openstreetmap.org/) + Nominatim API for geocoding
+## Project Structure
 
-
-## 📁 Project Structure
-
-```
+```text
 pawpath/
-├── index.html        # Main HTML file
-├── styles.css        # App styling
-├── app.js            # JavaScript logic
-├── README.md         # Project documentation
+├── index.html        # Semantic application layout
+├── styles.css        # Responsive design system and components
+├── app.js            # Leaflet, geocoding, clinic search, filters, and UI state
+└── README.md         # Project documentation
 ```
 
+## Getting Started Locally
 
-## 🚀 Getting Started Locally
+1. Clone the repository:
 
-1. Clone the repo
-    ```bash
-    git clone https://github.com/jeffthomasiii/pawpath.git
-    cd pawpath
-    ```
+   ```bash
+   git clone https://github.com/jeffthomasiii/pawpath.git
+   cd pawpath
+   ```
 
-2. Open `index.html` in your browser
+2. Serve the folder from a simple local web server. For example, with Python:
 
-✅ No build tools or server required.
+   ```bash
+   python -m http.server 8000
+   ```
 
+3. Open `http://localhost:8000` in a browser.
 
-## 🔐 API Usage & Fair Use
+A local server is recommended because browser geolocation and remote API requests may not work correctly when the page is opened directly from the file system.
 
-This app uses **free public APIs**:
+## Public API Usage and Fair Use
 
-- Nominatim (OpenStreetMap) for geocoding
-- Leaflet/OpenStreetMap tiles for maps
+PawPath currently relies on public OpenStreetMap infrastructure. These services are appropriate for a lightweight proof of concept, but they are not unlimited production APIs.
 
-These services are intended for **light use only**. Avoid bulk queries or frequent reloads.
+- Do not bulk download or prefetch OpenStreetMap tiles.
+- Avoid rapid or automated repeated searches.
+- Preserve OpenStreetMap attribution on the map.
+- Clinic data can be incomplete or outdated; users should call ahead when possible.
+- Before significant production traffic, configure dedicated geocoding, tile, and place-data providers with appropriate service agreements.
 
+## Privacy
 
-## 📌 Roadmap
+Location information is used in the browser to perform the requested nearby search. PawPath does not currently maintain a backend or store the user's location.
 
-- [ ] Filter by "Routine" vs "Emergency" vets
-- [ ] Offline support for cached searches
-- [ ] Add pet emergency tips
-- [ ] Branding + design polish
+## Roadmap
 
+- [ ] Add configurable map, tile, geocoding, and place-data providers
+- [ ] Add a production-ready veterinary data source
+- [ ] Add richer emergency-service verification
+- [ ] Add clinic hours and open-now status where reliable
+- [ ] Add saved clinics and recent searches
+- [ ] Add installable progressive-web-app support
+- [ ] Add automated accessibility and browser testing
 
-## 🤝 Contributing
-
-Feel free to open an issue or submit a pull request with ideas or improvements.
-
-
-## 📃 License
+## License
 
 MIT License — free to use, adapt, and share.
 
+## Built By
 
-## 🐕 Built By
-
-[Jeff Thomas III](https://github.com/jeffthomasiii)  
-Inspired by real road trips, campfires, and loyal companions 🛻🐾- 🐶 Lists both **routine vet care** and **emergency services**
-
-
-## 🛠 Technologies Used
-
-- **HTML**, **CSS**, **JavaScript**
-- [Leaflet.js](https://leafletjs.com/) (for interactive maps)
-- [OpenStreetMap](https://www.openstreetmap.org/) / Nominatim API (for geocoding)
-
-
-## 📁 Project Structure
+[Jeff Thomas III](https://github.com/jeffthomasiii)
