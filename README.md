@@ -10,7 +10,7 @@ PawPath is a mobile-friendly web application for campers, RV travelers, road-tri
 
 [Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
-The current proof of concept establishes the mapping and live-search foundation. The next development phase will add trip care plans, primary and backup facility selection, confidence indicators, Emergency Mode, and a printable emergency card.
+The proof of concept now presents two distinct workflows: **Plan a Trip** for destination-based preparation and **Find Care Now** for immediate nearby-care access. Upcoming increments will add facility details, confidence indicators, primary and backup selection, saved care plans, Emergency Mode, and a printable emergency card.
 
 ## Why PawPath?
 
@@ -45,6 +45,9 @@ Use the current location to prioritize likely emergency-care options and quickly
 
 ## Current capabilities
 
+- Switch between Plan a Trip and Find Care Now modes
+- Use destination-focused search language and actions for trip preparation
+- Emphasize current-location access for immediate nearby-care searches
 - Search by U.S. city, state, or ZIP code
 - Use browser geolocation to search near the current position
 - View veterinary clinics on an interactive Leaflet map
@@ -52,14 +55,13 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Select a clinic card to center and open its map marker
 - Open driving directions without embedding a paid map service
 - Responsive desktop, tablet, and mobile layouts
-- Keyboard-accessible controls, cards, and map markers
+- Keyboard-accessible mode controls, search controls, cards, and map markers
 - PawPath branded header and favicon
 
 ## Next proof-of-concept capabilities
 
-The `v0.2 – Care Plan POC` phase will add:
+The remaining `v0.2 – Care Plan POC` work will add:
 
-- Plan a Trip and Find Care Now modes
 - Facility-detail panels
 - Care-type and confidence indicators
 - Primary and backup facility selection
@@ -74,7 +76,7 @@ See [Proof-of-Concept Scope](docs/POC_SCOPE.md) and [Roadmap](docs/ROADMAP.md).
 
 Phase 1 work is tracked in the [`v0.2 Care Plan POC` tracking issue](https://github.com/jeffthomasiii/pawpath/issues/13), with one issue for each feature package and its acceptance criteria.
 
-The first implementation task is [POC-01: Add Plan a Trip and Find Care Now modes](https://github.com/jeffthomasiii/pawpath/issues/4).
+The next implementation task is [POC-02: Add facility detail and confidence states](https://github.com/jeffthomasiii/pawpath/issues/5).
 
 ## Product documentation
 
@@ -109,9 +111,9 @@ pawpath/
 ├── docs/                    # Product vision, POC scope, roadmap, backlog, and demo documentation
 ├── index.html               # Semantic application layout
 ├── styles.css               # Core responsive design system and components
-├── site-fixes.css           # Map and brand-layout corrections
+├── site-fixes.css           # Map, brand, and mode-layout enhancements
 ├── leaflet-local.css        # Locally hosted Leaflet layout styles
-├── app.js                   # Map, geocoding, clinic search, filters, and UI state
+├── app.js                   # Modes, map, geocoding, clinic search, filters, and UI state
 ├── map-layout-fix.js        # Defensive Leaflet resize handling
 └── README.md                # Project overview
 ```
