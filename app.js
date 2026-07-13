@@ -1,113 +1,419 @@
-let map, infoWindow, markers = [];
+const DEFAULT_LOCATION = { lat: 33.9425, lng: -117.2297, label: "Moreno Valley, California" };
+const SEARCH_RADIUS_METERS = 12000;
+const NOMINATIM_ENDPOINT = "https://nominatim.openstreetmap.org/search";
+const OVERPASS_ENDPOINT = "https://overpass-api.de/api/interpreter";
 
-window.initApp = async function () {
-  const defaultLoc = { lat: 33.92, lng: -117.22 };
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: defaultLoc,
-    zoom: 12,
+let map;
+let markerLayer;
+let clinics = [];
+let activeFilter = "all";
+let selectedClinicId = null;
+const markersById = new Map();
+
+const elements = {};
+
+document.addEventListener("DOMContentLoaded", initApp);
+
+function initApp() {
+  cacheElements();
+  initializeMap();
+  bindEvents();
+  elements.currentYear.textContent = new Date().getFullYear();
+  searchNearby(DEFAULT_LOCATION, DEFAULT_LOCATION.label);
+}
+
+function cacheElements() {
+  elements.searchForm = document.getElementById("search-form");
+  elements.locationInput = document.getElementById("location-input");
+  elements.locationButton = document.getElementById("loc-btn");
+  elements.formMessage = document.getElementById("form-message");
+  elements.clinicList = document.getElementById("clinic-list");
+  elements.resultCount = document.getElementById("result-count");
+  elements.resultsTitle = document.getElementById("results-title");
+  elements.emptyTemplate = document.getElementById("empty-state-template");
+  elements.filterButtons = [...document.querySelectorAll("[data-filter]")];
+  elements.currentYear = document.getElementById("current-year");
+}
+
+function initializeMap() {
+  map = L.map("map", {
+    center: [DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng],
+    zoom: 11,
+    zoomControl: false,
   });
-  infoWindow = new google.maps.InfoWindow();
 
-  document.getElementById("search-btn").onclick = handleSearch;
-  document.getElementById("loc-btn").onclick = handleGeolocation;
+  L.control.zoom({ position: "topright" }).addTo(map);
 
-  await renderClinicsNearby(defaultLoc);
-};
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
 
-async function renderClinicsNearby(center) {
-  clearMarkers();
-  document.getElementById("clinic-list").innerHTML = "";
+  markerLayer = L.layerGroup().addTo(map);
+}
 
-  try {
-    const { Place, SearchNearbyRankPreference } = await google.maps.importLibrary('places');
+function bindEvents() {
+  elements.searchForm.addEventListener("submit", handleSearchSubmit);
+  elements.locationButton.addEventListener("click", handleGeolocation);
 
-    const request = {
-      fields: ['displayName', 'location', 'formattedAddress', 'rating', 'phoneNumber'], // Added required fields
-      locationRestriction: {
-        circle: {
-          center: { latitude: center.lat, longitude: center.lng },
-          radius: 5000
-        }
-      },
-      includedTypes: ["veterinary_care"],
-      maxResultCount: 10,
-      rankPreference: SearchNearbyRankPreference.PROMINENCE
-    };
-
-    console.log("Nearby request:", request);
-    const response = await Place.searchNearby(request);
-
-    if (!response.places || response.places.length === 0) {
-      alert("No clinics found nearby.");
-      return;
-    }
-
-    response.places.forEach(p => {
-      const coords = { lat: p.location.latitude, lng: p.location.longitude };
-      const marker = new google.maps.Marker({ position: coords, map, title: p.displayName });
-      markers.push(marker);
-
-      marker.addListener("click", () => {
-        infoWindow.setContent(`<strong>${p.displayName}</strong><br>${p.formattedAddress || ""}`);
-        infoWindow.open(map, marker);
+  elements.filterButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      activeFilter = button.dataset.filter;
+      elements.filterButtons.forEach((item) => {
+        const isActive = item === button;
+        item.classList.toggle("is-active", isActive);
+        item.setAttribute("aria-pressed", String(isActive));
       });
-
-      const card = document.createElement("div");
-      card.className = "clinic-card";
-      card.innerHTML = `
-        <h3>${p.displayName}</h3>
-        <p>${p.formattedAddress || "Address not available"}</p>
-        ${p.rating ? `<p>⭐ Rating: ${p.rating}</p>` : ''}
-        ${p.phoneNumber ? `<p>📞 ${p.phoneNumber}</p>` : ''}
-        <button onclick="openDirections(${coords.lat},${coords.lng})">Get Directions</button>
-      `;
-      document.getElementById("clinic-list").appendChild(card);
+      renderClinics();
     });
+  });
+}
 
-  } catch (err) {
-    console.error("Nearby search failed:", err);
-    alert("Search for clinics failed—check the console for details.");
+async function handleSearchSubmit(event) {
+  event.preventDefault();
+  const query = elements.locationInput.value.trim();
+
+  if (!query) {
+    setMessage("Enter a city, state, or ZIP code to search.", true);
+    elements.locationInput.focus();
+    return;
   }
-}
 
-function openDirections(lat, lng) {
-  window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, "_blank");
-}
-
-async function handleSearch() {
-  const q = document.getElementById("location-input").value.trim();
-  if (!q) return alert("Please enter a city or ZIP.");
+  setLoadingState(`Finding ${query}`);
 
   try {
-    const res = await fetch(`https://nominatim.openstreetmap.org/search?format=json&countrycodes=us&q=${encodeURIComponent(q)}`);
-    const data = await res.json();
-    const loc = data[0];
-    if (!loc) throw new Error("Location not found");
-
-    const coords = { lat: +loc.lat, lng: +loc.lon };
-    map.setCenter(coords);
-    await renderClinicsNearby(coords);
-  } catch (err) {
-    console.error("Search error:", err);
-    alert("Could not find location.");
+    const location = await geocodeLocation(query);
+    await searchNearby(location, location.label || query);
+  } catch (error) {
+    console.error("Location search failed:", error);
+    showSearchError(error.message || "We could not find that location. Try a nearby city or ZIP code.");
   }
 }
 
 function handleGeolocation() {
   if (!navigator.geolocation) {
-    return alert("Geolocation not supported.");
+    setMessage("This browser does not support location access.", true);
+    return;
   }
+
+  setLoadingState("Finding your location");
+
   navigator.geolocation.getCurrentPosition(
-    async pos => {
-      const coords = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-      map.setCenter(coords);
-      await renderClinicsNearby(coords);
+    async ({ coords }) => {
+      try {
+        await searchNearby(
+          { lat: coords.latitude, lng: coords.longitude },
+          "your current location"
+        );
+      } catch (error) {
+        console.error("Nearby search failed:", error);
+        showSearchError("We found your location but could not load nearby clinics. Please try again.");
+      }
     },
-    () => alert("Unable to access location.")
+    (error) => {
+      const message = error.code === error.PERMISSION_DENIED
+        ? "Location access was denied. Search by city or ZIP code instead."
+        : "Your location is unavailable right now. Search by city or ZIP code instead.";
+      showSearchError(message);
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 300000 }
   );
 }
 
-function clearMarkers() {
-  markers.forEach(m => m.setMap(null));
-  markers = [];
+async function geocodeLocation(query) {
+  const url = new URL(NOMINATIM_ENDPOINT);
+  url.searchParams.set("format", "jsonv2");
+  url.searchParams.set("countrycodes", "us");
+  url.searchParams.set("limit", "1");
+  url.searchParams.set("q", query);
+
+  const response = await fetch(url, {
+    headers: { Accept: "application/json" },
+  });
+
+  if (!response.ok) {
+    throw new Error("The location service is temporarily unavailable.");
+  }
+
+  const [result] = await response.json();
+  if (!result) {
+    throw new Error("We could not find that location. Try including the state or using a ZIP code.");
+  }
+
+  return {
+    lat: Number(result.lat),
+    lng: Number(result.lon),
+    label: result.display_name.split(",").slice(0, 3).join(","),
+  };
+}
+
+async function searchNearby(center, label) {
+  setLoadingState(`Finding veterinary care near ${label}`);
+  map.setView([center.lat, center.lng], 12);
+
+  try {
+    clinics = await fetchVeterinaryClinics(center);
+    selectedClinicId = null;
+    activeFilter = "all";
+    resetFilters();
+    elements.resultsTitle.textContent = label ? `Care near ${shortenLabel(label)}` : "Veterinary clinics";
+    renderClinics();
+    setMessage(`Showing veterinary care near ${label}.`);
+  } catch (error) {
+    console.error("Clinic lookup failed:", error);
+    showSearchError("Clinic data is temporarily unavailable. Please try again in a moment.");
+  }
+}
+
+async function fetchVeterinaryClinics(center) {
+  const query = `
+    [out:json][timeout:25];
+    (
+      node["amenity"="veterinary"](around:${SEARCH_RADIUS_METERS},${center.lat},${center.lng});
+      way["amenity"="veterinary"](around:${SEARCH_RADIUS_METERS},${center.lat},${center.lng});
+      relation["amenity"="veterinary"](around:${SEARCH_RADIUS_METERS},${center.lat},${center.lng});
+    );
+    out center tags;
+  `;
+
+  const response = await fetch(OVERPASS_ENDPOINT, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
+    body: new URLSearchParams({ data: query }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Overpass request failed with status ${response.status}`);
+  }
+
+  const data = await response.json();
+  return data.elements
+    .map(normalizeClinic)
+    .filter(Boolean)
+    .sort((a, b) => a.distanceMiles - b.distanceMiles);
+}
+
+function normalizeClinic(item) {
+  const lat = item.lat ?? item.center?.lat;
+  const lng = item.lon ?? item.center?.lon;
+  if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+
+  const tags = item.tags || {};
+  const name = tags.name || tags["operator"] || "Veterinary clinic";
+  const address = formatAddress(tags);
+  const phone = tags.phone || tags["contact:phone"] || "";
+  const website = normalizeWebsite(tags.website || tags["contact:website"] || "");
+  const emergency = isEmergencyClinic(tags, name);
+
+  return {
+    id: `${item.type}-${item.id}`,
+    name,
+    address,
+    phone,
+    website,
+    emergency,
+    lat,
+    lng,
+    distanceMiles: haversineMiles(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lng, lat, lng),
+  };
+}
+
+function formatAddress(tags) {
+  const street = [tags["addr:housenumber"], tags["addr:street"]].filter(Boolean).join(" ");
+  const locality = [tags["addr:city"], tags["addr:state"], tags["addr:postcode"]].filter(Boolean).join(", ");
+  return [street, locality].filter(Boolean).join(" • ") || "Address not listed in OpenStreetMap";
+}
+
+function normalizeWebsite(value) {
+  if (!value) return "";
+  return /^https?:\/\//i.test(value) ? value : `https://${value}`;
+}
+
+function isEmergencyClinic(tags, name) {
+  const combined = `${name} ${tags.emergency || ""} ${tags.opening_hours || ""}`.toLowerCase();
+  return tags.emergency === "yes" || /emergency|24 hour|24-hour|urgent/.test(combined);
+}
+
+function renderClinics() {
+  markerLayer.clearLayers();
+  markersById.clear();
+  elements.clinicList.innerHTML = "";
+
+  const visibleClinics = clinics.filter((clinic) => {
+    if (activeFilter === "emergency") return clinic.emergency;
+    if (activeFilter === "routine") return !clinic.emergency;
+    return true;
+  });
+
+  elements.resultCount.textContent = `${visibleClinics.length} ${visibleClinics.length === 1 ? "result" : "results"}`;
+
+  if (!visibleClinics.length) {
+    elements.clinicList.appendChild(elements.emptyTemplate.content.cloneNode(true));
+    return;
+  }
+
+  const bounds = [];
+
+  visibleClinics.forEach((clinic) => {
+    const marker = createMarker(clinic).addTo(markerLayer);
+    markersById.set(clinic.id, marker);
+    bounds.push([clinic.lat, clinic.lng]);
+    elements.clinicList.appendChild(createClinicCard(clinic));
+  });
+
+  if (bounds.length === 1) {
+    map.setView(bounds[0], 14);
+  } else {
+    map.fitBounds(bounds, { padding: [45, 45], maxZoom: 14 });
+  }
+}
+
+function createMarker(clinic) {
+  const icon = L.divIcon({
+    className: "",
+    html: `<div class="custom-marker${clinic.emergency ? " is-emergency" : ""}"><span aria-hidden="true">✚</span></div>`,
+    iconSize: [34, 34],
+    iconAnchor: [17, 34],
+    popupAnchor: [0, -32],
+  });
+
+  const marker = L.marker([clinic.lat, clinic.lng], {
+    icon,
+    title: clinic.name,
+    keyboard: true,
+  });
+
+  marker.bindPopup(`
+    <strong class="popup-title">${escapeHtml(clinic.name)}</strong>
+    <span>${escapeHtml(clinic.address)}</span>
+  `);
+
+  marker.on("click", () => selectClinic(clinic.id, false));
+  return marker;
+}
+
+function createClinicCard(clinic) {
+  const card = document.createElement("article");
+  card.className = "clinic-card";
+  card.tabIndex = 0;
+  card.dataset.clinicId = clinic.id;
+  card.setAttribute("aria-label", `View ${clinic.name} on the map`);
+
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${clinic.lat},${clinic.lng}`;
+
+  card.innerHTML = `
+    <div class="clinic-card-header">
+      <div>
+        <h3>${escapeHtml(clinic.name)}</h3>
+        <p>${escapeHtml(clinic.address)}</p>
+      </div>
+      <span class="care-badge${clinic.emergency ? " is-emergency" : ""}">
+        ${clinic.emergency ? "Emergency" : "Veterinary"}
+      </span>
+    </div>
+    <div class="card-meta">
+      ${clinic.phone ? `<span>☎ ${escapeHtml(clinic.phone)}</span>` : ""}
+      ${clinic.website ? `<a href="${escapeAttribute(clinic.website)}" target="_blank" rel="noopener noreferrer">Website</a>` : ""}
+    </div>
+    <div class="card-actions">
+      <span>${clinic.emergency ? "Emergency service indicated" : "Call to confirm services"}</span>
+      <a class="directions-link" href="${directionsUrl}" target="_blank" rel="noopener noreferrer">Directions ↗</a>
+    </div>
+  `;
+
+  card.addEventListener("click", (event) => {
+    if (event.target.closest("a")) return;
+    selectClinic(clinic.id, true);
+  });
+
+  card.addEventListener("keydown", (event) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      selectClinic(clinic.id, true);
+    }
+  });
+
+  return card;
+}
+
+function selectClinic(id, focusMap) {
+  selectedClinicId = id;
+  document.querySelectorAll(".clinic-card").forEach((card) => {
+    card.classList.toggle("is-selected", card.dataset.clinicId === id);
+  });
+
+  const clinic = clinics.find((item) => item.id === id);
+  const marker = markersById.get(id);
+  if (!clinic || !marker) return;
+
+  if (focusMap) {
+    map.flyTo([clinic.lat, clinic.lng], Math.max(map.getZoom(), 14), { duration: 0.6 });
+  }
+  marker.openPopup();
+
+  const card = document.querySelector(`[data-clinic-id="${CSS.escape(id)}"]`);
+  card?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function resetFilters() {
+  elements.filterButtons.forEach((button) => {
+    const isActive = button.dataset.filter === "all";
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
+function setLoadingState(message) {
+  elements.clinicList.innerHTML = `
+    <div class="loading-state">
+      <p><strong>${escapeHtml(message)}</strong><span class="loading-dots"></span></p>
+    </div>
+  `;
+  elements.resultCount.textContent = "Searching…";
+  setMessage(message);
+}
+
+function showSearchError(message) {
+  elements.clinicList.innerHTML = `
+    <div class="empty-state">
+      <span aria-hidden="true">⚠</span>
+      <h3>We could not complete the search</h3>
+      <p>${escapeHtml(message)}</p>
+    </div>
+  `;
+  elements.resultCount.textContent = "Unavailable";
+  setMessage(message, true);
+}
+
+function setMessage(message, isError = false) {
+  elements.formMessage.textContent = message;
+  elements.formMessage.classList.toggle("is-error", isError);
+}
+
+function shortenLabel(label) {
+  return label.split(",").slice(0, 2).join(",").trim();
+}
+
+function haversineMiles(lat1, lon1, lat2, lon2) {
+  const toRadians = (degrees) => (degrees * Math.PI) / 180;
+  const earthRadiusMiles = 3958.8;
+  const deltaLat = toRadians(lat2 - lat1);
+  const deltaLon = toRadians(lon2 - lon1);
+  const a =
+    Math.sin(deltaLat / 2) ** 2 +
+    Math.cos(toRadians(lat1)) * Math.cos(toRadians(lat2)) * Math.sin(deltaLon / 2) ** 2;
+  return earthRadiusMiles * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value).replaceAll("`", "&#096;");
 }
