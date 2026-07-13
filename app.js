@@ -3,10 +3,43 @@ const SEARCH_RADIUS_METERS = 12000;
 const NOMINATIM_ENDPOINT = "https://nominatim.openstreetmap.org/search";
 const OVERPASS_ENDPOINT = "https://overpass-api.de/api/interpreter";
 
+const MODE_CONTENT = {
+  plan: {
+    eyebrow: "Pet-care preparedness for the road",
+    title: "Make a pet-care plan before you travel.",
+    description:
+      "Search a campground, destination, city, or ZIP code. Review nearby veterinary care now so you know where to call and where to go before your trip begins.",
+    inputLabel: "Where are you going?",
+    placeholder: "Campground, city, state, or ZIP code",
+    searchButton: "Explore destination",
+    locationButton: "Use current location instead",
+    guidance: "Start with where you will stay. PawPath will show care options near that destination.",
+    resultsEyebrow: "Trip planning",
+    emptySearchMessage: "Enter a campground, destination, city, state, or ZIP code to search.",
+    announcement: "Plan a Trip selected. Search a destination to prepare veterinary care options before you leave.",
+  },
+  now: {
+    eyebrow: "When your pet needs care away from home",
+    title: "Find nearby pet care now.",
+    description:
+      "Use your current location to quickly find veterinary and likely emergency care. Review the options, call ahead, and open directions when you are ready to go.",
+    inputLabel: "Where should we search?",
+    placeholder: "City, state, or ZIP code",
+    searchButton: "Search this area",
+    locationButton: "Find care near me",
+    guidance: "For the fastest nearby search, use your current location. Location access stays in your browser.",
+    resultsEyebrow: "Nearby care",
+    emptySearchMessage: "Enter a city, state, or ZIP code, or use your current location.",
+    announcement: "Find Care Now selected. Use your current location or search an area for nearby veterinary care.",
+  },
+};
+
 let map;
 let markerLayer;
 let clinics = [];
 let activeFilter = "all";
+let activeMode = "plan";
+let currentSearchLabel = DEFAULT_LOCATION.label;
 let selectedClinicId = null;
 const markersById = new Map();
 
@@ -18,17 +51,30 @@ function initApp() {
   cacheElements();
   initializeMap();
   bindEvents();
+  setMode("plan");
   elements.currentYear.textContent = new Date().getFullYear();
   searchNearby(DEFAULT_LOCATION, DEFAULT_LOCATION.label);
 }
 
 function cacheElements() {
+  elements.heroPanel = document.getElementById("hero-panel");
+  elements.modeButtons = [...document.querySelectorAll("[data-mode]")];
+  elements.modeStatus = document.getElementById("mode-status");
+  elements.heroEyebrow = document.getElementById("hero-eyebrow");
+  elements.pageTitle = document.getElementById("page-title");
+  elements.heroDescription = document.getElementById("hero-description");
+  elements.locationLabel = document.getElementById("location-label");
   elements.searchForm = document.getElementById("search-form");
   elements.locationInput = document.getElementById("location-input");
+  elements.searchButton = document.getElementById("search-btn");
+  elements.searchButtonLabel = document.getElementById("search-button-label");
   elements.locationButton = document.getElementById("loc-btn");
+  elements.locationButtonLabel = document.getElementById("location-button-label");
+  elements.modeGuidance = document.getElementById("mode-guidance");
   elements.formMessage = document.getElementById("form-message");
   elements.clinicList = document.getElementById("clinic-list");
   elements.resultCount = document.getElementById("result-count");
+  elements.resultsEyebrow = document.getElementById("results-eyebrow");
   elements.resultsTitle = document.getElementById("results-title");
   elements.emptyTemplate = document.getElementById("empty-state-template");
   elements.filterButtons = [...document.querySelectorAll("[data-filter]")];
@@ -56,6 +102,11 @@ function bindEvents() {
   elements.searchForm.addEventListener("submit", handleSearchSubmit);
   elements.locationButton.addEventListener("click", handleGeolocation);
 
+  elements.modeButtons.forEach((button, index) => {
+    button.addEventListener("click", () => setMode(button.dataset.mode, true));
+    button.addEventListener("keydown", (event) => handleModeKeydown(event, index));
+  });
+
   elements.filterButtons.forEach((button) => {
     button.addEventListener("click", () => {
       activeFilter = button.dataset.filter;
@@ -69,12 +120,62 @@ function bindEvents() {
   });
 }
 
+function handleModeKeydown(event, currentIndex) {
+  if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+
+  event.preventDefault();
+  let nextIndex = currentIndex;
+
+  if (event.key === "Home") nextIndex = 0;
+  if (event.key === "End") nextIndex = elements.modeButtons.length - 1;
+  if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+    nextIndex = (currentIndex - 1 + elements.modeButtons.length) % elements.modeButtons.length;
+  }
+  if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+    nextIndex = (currentIndex + 1) % elements.modeButtons.length;
+  }
+
+  const nextButton = elements.modeButtons[nextIndex];
+  nextButton.focus();
+  setMode(nextButton.dataset.mode, true);
+}
+
+function setMode(mode, announce = false) {
+  if (!MODE_CONTENT[mode]) return;
+
+  activeMode = mode;
+  const content = MODE_CONTENT[mode];
+
+  elements.heroPanel.dataset.mode = mode;
+  elements.modeButtons.forEach((button) => {
+    const isActive = button.dataset.mode === mode;
+    button.classList.toggle("is-active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  elements.heroEyebrow.textContent = content.eyebrow;
+  elements.pageTitle.textContent = content.title;
+  elements.heroDescription.textContent = content.description;
+  elements.locationLabel.textContent = content.inputLabel;
+  elements.locationInput.placeholder = content.placeholder;
+  elements.searchButtonLabel.textContent = content.searchButton;
+  elements.locationButtonLabel.textContent = content.locationButton;
+  elements.modeGuidance.textContent = content.guidance;
+  elements.resultsEyebrow.textContent = content.resultsEyebrow;
+  updateResultsHeading();
+  setMessage("");
+
+  if (announce) {
+    elements.modeStatus.textContent = content.announcement;
+  }
+}
+
 async function handleSearchSubmit(event) {
   event.preventDefault();
   const query = elements.locationInput.value.trim();
 
   if (!query) {
-    setMessage("Enter a city, state, or ZIP code to search.", true);
+    setMessage(MODE_CONTENT[activeMode].emptySearchMessage, true);
     elements.locationInput.focus();
     return;
   }
@@ -153,16 +254,29 @@ async function searchNearby(center, label) {
 
   try {
     clinics = await fetchVeterinaryClinics(center);
+    currentSearchLabel = label || "this area";
     selectedClinicId = null;
     activeFilter = "all";
     resetFilters();
-    elements.resultsTitle.textContent = label ? `Care near ${shortenLabel(label)}` : "Veterinary clinics";
+    updateResultsHeading();
     renderClinics();
-    setMessage(`Showing veterinary care near ${label}.`);
+    setMessage(
+      activeMode === "plan"
+        ? `Showing care options near ${label}. Review these choices before your trip and call ahead to confirm services.`
+        : `Showing veterinary care near ${label}. Call ahead before you travel.`
+    );
   } catch (error) {
     console.error("Clinic lookup failed:", error);
     showSearchError("Clinic data is temporarily unavailable. Please try again in a moment.");
   }
+}
+
+function updateResultsHeading() {
+  if (!elements.resultsTitle) return;
+  const label = shortenLabel(currentSearchLabel);
+  elements.resultsTitle.textContent = activeMode === "plan"
+    ? `Care options near ${label}`
+    : `Care near ${label}`;
 }
 
 async function fetchVeterinaryClinics(center) {
