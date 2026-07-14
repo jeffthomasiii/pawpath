@@ -10,7 +10,7 @@ PawPath is a mobile-friendly web application for campers, RV travelers, road-tri
 
 [Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
-The proof of concept now presents two distinct workflows: **Plan a Trip** for destination-based preparation and **Find Care Now** for immediate nearby-care access. Users can review facility details and confidence information, then choose a Primary emergency or urgent-care option and a distinct Backup facility for the current session. Upcoming increments will save the full trip care plan, add Emergency Mode, and create a printable emergency card.
+The proof of concept now presents two distinct workflows: **Plan a Trip** for destination-based preparation and **Find Care Now** for immediate nearby-care access. Users can review facility details and confidence information, then choose a Primary emergency or urgent-care option and a distinct Backup facility for the current session. When the normal nearby search contains no emergency or urgent-care option, PawPath also checks a 30-mile fallback radius and adds the nearest qualifying listing. Upcoming increments will save the full trip care plan, add Emergency Mode, and create a printable emergency card.
 
 ## Why PawPath?
 
@@ -48,6 +48,7 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Switch between Plan a Trip and Find Care Now modes
 - Use destination-focused search language and actions for trip preparation
 - Emphasize current-location access for immediate nearby-care searches
+- Search a 30-mile fallback radius for the nearest emergency or urgent-care option only when none appears in the normal nearby results
 - Open the same facility-detail experience from a result card or map marker
 - Classify facilities conservatively as emergency, urgent, routine, or unknown
 - Show confidence states and plain-language explanations without relying only on color
@@ -118,8 +119,10 @@ pawpath/
 ├── styles.css               # Core responsive design system and components
 ├── site-fixes.css           # Map, brand, mode, and facility-detail enhancements
 ├── selection.css            # Primary and Backup selection components
+├── emergency-fallback.css   # Extended emergency-result presentation
 ├── leaflet-local.css        # Locally hosted Leaflet layout styles
 ├── app.js                   # Modes, map, facility classification, detail rendering, search, filters, and UI state
+├── emergency-fallback.js    # Conditional 30-mile emergency and urgent-care fallback search
 ├── selection.js             # Session-based Primary and Backup care-plan selection
 ├── map-layout-fix.js        # Defensive Leaflet resize handling
 └── README.md                # Project overview
