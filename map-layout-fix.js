@@ -1,6 +1,24 @@
+/* Load the saved-plan summary after the core care-plan module is available. */
+
+const planSummaryStylesheet = document.createElement("link");
+planSummaryStylesheet.rel = "stylesheet";
+planSummaryStylesheet.href = "plan-summary.css";
+document.head.append(planSummaryStylesheet);
+
+const planSummaryScript = document.createElement("script");
+planSummaryScript.src = "plan-summary.js";
+document.head.append(planSummaryScript);
+
 /* Keep Leaflet synchronized with responsive layout changes. */
 
 document.addEventListener("DOMContentLoaded", () => {
+  const editorClearButton = document.getElementById("clear-care-plan");
+  editorClearButton?.addEventListener("click", () => {
+    window.setTimeout(() => {
+      if (typeof renderSavedPlanSummary === "function") renderSavedPlanSummary();
+    }, 0);
+  });
+
   const mapElement = document.getElementById("map");
   if (!mapElement) return;
 
