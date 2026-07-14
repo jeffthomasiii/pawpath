@@ -6,7 +6,8 @@ const SEARCH_RADIUS_TOLERANCE_MILES = 0.35;
 
 const originalFetchVeterinaryClinicsForFallback = fetchVeterinaryClinics;
 const originalSearchNearbyForFallback = searchNearby;
-const originalRenderClinicsForFallback = renderClinics;
+let originalRenderClinicsForFallback = null;
+let emergencyFallbackRenderHookInstalled = false;
 
 let emergencyFallbackState = {
   added: false,
@@ -14,6 +15,7 @@ let emergencyFallbackState = {
 };
 
 MODE_CONTENT.plan.locationButton = "Use my location";
+document.addEventListener("DOMContentLoaded", installEmergencyFallbackRenderHook);
 
 fetchVeterinaryClinics = async function fetchVeterinaryClinicsWithEmergencyFallback(center) {
   emergencyFallbackState = { added: false, facility: null };
@@ -60,10 +62,16 @@ searchNearby = async function searchNearbyWithEmergencyFallback(center, label) {
   );
 };
 
-renderClinics = function renderClinicsWithEmergencyFallback(options = {}) {
-  originalRenderClinicsForFallback(options);
-  updateEmergencyFallbackPresentation();
-};
+function installEmergencyFallbackRenderHook() {
+  if (emergencyFallbackRenderHookInstalled) return;
+
+  originalRenderClinicsForFallback = renderClinics;
+  renderClinics = function renderClinicsWithEmergencyFallback(options = {}) {
+    originalRenderClinicsForFallback(options);
+    updateEmergencyFallbackPresentation();
+  };
+  emergencyFallbackRenderHookInstalled = true;
+}
 
 function updateEmergencyFallbackPresentation() {
   const notice = ensureExpandedSearchNotice();
