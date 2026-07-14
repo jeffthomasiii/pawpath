@@ -1,3 +1,25 @@
+.expanded-emergency-search-notice {
+  display: grid;
+  gap: 3px;
+  margin: -4px 0 16px;
+  padding: 12px 14px;
+  border: 1px solid rgba(163, 62, 50, 0.24);
+  border-radius: 12px;
+  background: #fff4f1;
+  color: #75453f;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.expanded-emergency-search-notice[hidden] {
+  display: none;
+}
+
+.expanded-emergency-search-notice strong {
+  color: var(--danger);
+  font-size: 0.82rem;
+}
+
 .clinic-card.is-extended-emergency {
   border-color: rgba(163, 62, 50, 0.45);
   background: linear-gradient(180deg, #fffaf8, var(--white));
@@ -26,7 +48,16 @@
   text-align: right;
 }
 
+.custom-marker.is-expanded-emergency {
+  outline: 4px solid rgba(216, 148, 63, 0.48);
+  outline-offset: 3px;
+}
+
 @media (max-width: 460px) {
+  .expanded-emergency-search-notice {
+    margin-bottom: 12px;
+  }
+
   .extended-emergency-note {
     align-items: flex-start;
     flex-direction: column;
