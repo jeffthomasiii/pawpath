@@ -10,15 +10,16 @@ let originalRenderClinicsForFallback = null;
 let emergencyFallbackRenderHookInstalled = false;
 
 let emergencyFallbackState = {
-  added: false,
+  status: "idle",
   facility: null,
+  center: null,
 };
 
 MODE_CONTENT.plan.locationButton = "Use my location";
 document.addEventListener("DOMContentLoaded", installEmergencyFallbackRenderHook);
 
 fetchVeterinaryClinics = async function fetchVeterinaryClinicsWithEmergencyFallback(center) {
-  emergencyFallbackState = { added: false, facility: null };
+  emergencyFallbackState = { status: "idle", facility: null, center };
 
   const fetchedClinics = await originalFetchVeterinaryClinicsForFallback(center);
   const nearbyClinics = fetchedClinics.filter(
@@ -36,16 +37,20 @@ fetchVeterinaryClinics = async function fetchVeterinaryClinicsWithEmergencyFallb
       .filter((clinic) => clinic.distanceMiles <= EMERGENCY_FALLBACK_RADIUS_MILES)
       .sort((a, b) => a.distanceMiles - b.distanceMiles)[0];
 
-    if (!nearestFallback) return nearbyClinics;
+    if (!nearestFallback) {
+      emergencyFallbackState = { status: "not-found", facility: null, center };
+      return nearbyClinics;
+    }
 
     nearestFallback.isExtendedEmergencySearch = true;
     nearestFallback.searchScope = "expanded-emergency";
     nearestFallback.sourceNotes = `${nearestFallback.sourceNotes} PawPath included this facility because no emergency or urgent-care listing appeared within the normal ${NORMAL_SEARCH_RADIUS_MILES.toFixed(1)}-mile search area.`;
-    emergencyFallbackState = { added: true, facility: nearestFallback };
+    emergencyFallbackState = { status: "added", facility: nearestFallback, center };
 
     return [...nearbyClinics, nearestFallback].sort((a, b) => a.distanceMiles - b.distanceMiles);
   } catch (error) {
     console.warn("Extended emergency-care search failed:", error);
+    emergencyFallbackState = { status: "error", facility: null, center };
     return nearbyClinics;
   }
 };
@@ -54,12 +59,16 @@ searchNearby = async function searchNearbyWithEmergencyFallback(center, label) {
   await originalSearchNearbyForFallback(center, label);
   updateEmergencyFallbackPresentation();
 
-  if (!emergencyFallbackState.added || !emergencyFallbackState.facility) return;
-
-  const facility = emergencyFallbackState.facility;
-  setMessage(
-    `No emergency or urgent-care listing appeared within ${NORMAL_SEARCH_RADIUS_MILES.toFixed(1)} miles, so PawPath added the nearest likely option within ${EMERGENCY_FALLBACK_RADIUS_MILES.toFixed(0)} miles: ${facility.name} (${facility.distanceMiles.toFixed(1)} miles away). Call ahead to confirm services and availability.`
-  );
+  if (emergencyFallbackState.status === "added" && emergencyFallbackState.facility) {
+    const facility = emergencyFallbackState.facility;
+    setMessage(
+      `No emergency or urgent-care listing appeared within ${NORMAL_SEARCH_RADIUS_MILES.toFixed(1)} miles, so PawPath added the nearest likely option within ${EMERGENCY_FALLBACK_RADIUS_MILES.toFixed(0)} miles: ${facility.name} (${facility.distanceMiles.toFixed(1)} miles away). Call ahead to confirm services and availability.`
+    );
+  } else if (emergencyFallbackState.status === "not-found") {
+    setMessage(
+      `No emergency or urgent-care facility could be identified in OpenStreetMap within ${EMERGENCY_FALLBACK_RADIUS_MILES.toFixed(0)} miles. Use the external emergency-search link and call ahead to confirm care.`
+    );
+  }
 };
 
 function installEmergencyFallbackRenderHook() {
@@ -84,7 +93,27 @@ function updateEmergencyFallbackPresentation() {
     element.classList.remove("is-expanded-emergency");
   });
 
-  if (!emergencyFallbackState.added || !emergencyFallbackState.facility) {
+  if (emergencyFallbackState.status === "idle") {
+    notice.hidden = true;
+    notice.innerHTML = "";
+    return;
+  }
+
+  if (emergencyFallbackState.status === "not-found" || emergencyFallbackState.status === "error") {
+    const searchUrl = buildExternalEmergencySearchUrl(emergencyFallbackState.center);
+    notice.hidden = false;
+    notice.classList.add("is-unresolved");
+    notice.innerHTML = `
+      <strong>Emergency facility not identified</strong>
+      <span>OpenStreetMap did not provide enough information to identify an emergency or urgent-care facility within ${EMERGENCY_FALLBACK_RADIUS_MILES.toFixed(0)} miles.</span>
+      <a href="${escapeAttribute(searchUrl)}" target="_blank" rel="noopener noreferrer">Search emergency veterinarians externally ↗</a>
+    `;
+    return;
+  }
+
+  notice.classList.remove("is-unresolved");
+
+  if (emergencyFallbackState.status !== "added" || !emergencyFallbackState.facility) {
     notice.hidden = true;
     notice.innerHTML = "";
     return;
@@ -137,19 +166,12 @@ function ensureExpandedSearchNotice() {
 }
 
 async function fetchEmergencyFallbackCandidates(center) {
-  const emergencyNamePattern = "emergency|urgent|24[ -]?hour|24/7";
   const query = `
-    [out:json][timeout:25];
+    [out:json][timeout:30];
     (
-      node["amenity"="veterinary"]["emergency"="yes"](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
-      way["amenity"="veterinary"]["emergency"="yes"](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
-      relation["amenity"="veterinary"]["emergency"="yes"](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
-      node["amenity"="veterinary"]["healthcare:speciality"~"emergency",i](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
-      way["amenity"="veterinary"]["healthcare:speciality"~"emergency",i](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
-      relation["amenity"="veterinary"]["healthcare:speciality"~"emergency",i](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
-      node["amenity"="veterinary"]["name"~"${emergencyNamePattern}",i](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
-      way["amenity"="veterinary"]["name"~"${emergencyNamePattern}",i](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
-      relation["amenity"="veterinary"]["name"~"${emergencyNamePattern}",i](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
+      node["amenity"="veterinary"](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
+      way["amenity"="veterinary"](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
+      relation["amenity"="veterinary"](around:${EMERGENCY_FALLBACK_RADIUS_METERS},${center.lat},${center.lng});
     );
     out center tags;
   `;
@@ -169,11 +191,78 @@ async function fetchEmergencyFallbackCandidates(center) {
 
   data.elements.forEach((item) => {
     const clinic = normalizeClinic(item, center);
-    if (!clinic || !isEmergencyOrUrgentFacility(clinic)) return;
+    if (!clinic) return;
+
+    const evidence = getEmergencyEvidence(item.tags || {}, clinic);
+    if (!evidence) return;
+
+    clinic.careType = evidence.careType;
+    clinic.emergency = true;
+    clinic.confidence = evidence.confidence;
+    clinic.sourceNotes = `${clinic.sourceNotes} ${evidence.note}`;
     uniqueClinics.set(clinic.id, clinic);
   });
 
   return [...uniqueClinics.values()].sort((a, b) => a.distanceMiles - b.distanceMiles);
+}
+
+function getEmergencyEvidence(tags, clinic) {
+  const emergencyTag = String(tags.emergency || tags["veterinary:emergency"] || "").toLowerCase();
+  const speciality = String(tags["healthcare:speciality"] || tags.speciality || "").toLowerCase();
+  const openingHours = String(tags.opening_hours || "").toLowerCase();
+  const searchableText = [
+    clinic.name,
+    tags.operator,
+    tags.brand,
+    tags.description,
+    tags.note,
+    tags["healthcare:speciality"],
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  if (emergencyTag === "yes" || speciality.includes("emergency")) {
+    return {
+      careType: "emergency",
+      confidence: "source-listed",
+      note: "The source record explicitly indicates emergency veterinary capability. Confirm current hours and availability by phone.",
+    };
+  }
+
+  if (speciality.includes("urgent") || /\burgent\b/.test(searchableText)) {
+    return {
+      careType: "urgent",
+      confidence: "likely-emergency",
+      note: "Urgent-care capability is inferred from the source record and must be confirmed by phone.",
+    };
+  }
+
+  if (/\bemergency\b|\b24[ -]?hour\b|\b24\/7\b/.test(searchableText)) {
+    return {
+      careType: "emergency",
+      confidence: "likely-emergency",
+      note: "Emergency capability is inferred from the facility name or source description and must be confirmed by phone.",
+    };
+  }
+
+  if (/24\/7|00:00-24:00|00:00-00:00/.test(openingHours)) {
+    return {
+      careType: "emergency",
+      confidence: "likely-emergency",
+      note: "The listing appears to operate continuously, but emergency capability is not explicitly verified. Call before traveling.",
+    };
+  }
+
+  return null;
+}
+
+function buildExternalEmergencySearchUrl(center) {
+  const locationText = center && Number.isFinite(center.lat) && Number.isFinite(center.lng)
+    ? ` near ${center.lat.toFixed(5)},${center.lng.toFixed(5)}`
+    : "";
+  const query = encodeURIComponent(`emergency veterinarian${locationText}`);
+  return `https://www.google.com/maps/search/?api=1&query=${query}`;
 }
 
 function isEmergencyOrUrgentFacility(clinic) {

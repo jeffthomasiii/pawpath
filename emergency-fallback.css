@@ -20,6 +20,26 @@
   font-size: 0.82rem;
 }
 
+.expanded-emergency-search-notice a {
+  width: fit-content;
+  margin-top: 5px;
+  color: var(--danger);
+  font-weight: 800;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.expanded-emergency-search-notice.is-unresolved {
+  border-color: rgba(146, 98, 28, 0.28);
+  background: #fff8e9;
+  color: #6b512a;
+}
+
+.expanded-emergency-search-notice.is-unresolved strong,
+.expanded-emergency-search-notice.is-unresolved a {
+  color: #815c1d;
+}
+
 .clinic-card.is-extended-emergency {
   border-color: rgba(163, 62, 50, 0.45);
   background: linear-gradient(180deg, #fffaf8, var(--white));
