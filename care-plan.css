@@ -2,10 +2,10 @@
   display: grid;
   gap: 22px;
   padding: clamp(22px, 4vw, 34px);
-  border: 1px solid var(--line);
+  border: 1px solid var(--border);
   border-radius: 22px;
   background: var(--white);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-sm);
 }
 
 .care-plan-editor[hidden] {
@@ -23,11 +23,18 @@
   margin: 3px 0 0;
 }
 
-.care-plan-editor-heading > p {
+.care-plan-editor-heading > div:last-child {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
   max-width: 520px;
+}
+
+.care-plan-editor-heading > div:last-child p {
   margin: 0;
-  color: var(--muted);
+  color: var(--ink-500);
   line-height: 1.55;
+  text-align: right;
 }
 
 .care-plan-saved-state {
@@ -36,15 +43,15 @@
   width: fit-content;
   padding: 6px 10px;
   border-radius: 999px;
-  background: var(--surface-soft);
-  color: var(--muted);
+  background: var(--sage-50);
+  color: var(--ink-500);
   font-size: 0.78rem;
   font-weight: 800;
 }
 
 .care-plan-saved-state.is-saved {
-  background: #e8f3ed;
-  color: var(--green-dark);
+  background: var(--sage-100);
+  color: var(--forest-900);
 }
 
 .care-plan-form {
@@ -68,7 +75,7 @@
 }
 
 .care-plan-field label {
-  color: var(--text);
+  color: var(--ink-900);
   font-size: 0.84rem;
   font-weight: 800;
 }
@@ -76,10 +83,10 @@
 .care-plan-field input,
 .care-plan-field textarea {
   width: 100%;
-  border: 1px solid var(--line-strong);
+  border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--white);
-  color: var(--text);
+  color: var(--ink-900);
   font: inherit;
 }
 
@@ -96,13 +103,13 @@
 
 .care-plan-field input:focus,
 .care-plan-field textarea:focus {
-  border-color: var(--green);
-  outline: 3px solid rgba(57, 105, 88, 0.16);
+  border-color: var(--forest-700);
+  outline: 3px solid rgba(43, 106, 89, 0.16);
   outline-offset: 1px;
 }
 
 .care-plan-field small {
-  color: var(--muted);
+  color: var(--ink-500);
   font-size: 0.75rem;
   line-height: 1.4;
 }
@@ -110,7 +117,7 @@
 .care-plan-privacy-note {
   margin: 0;
   padding: 12px 14px;
-  border-left: 3px solid var(--gold);
+  border-left: 3px solid var(--amber-500);
   border-radius: 0 10px 10px 0;
   background: #fff9ed;
   color: #675434;
@@ -128,7 +135,7 @@
 .care-plan-status {
   min-height: 1.25em;
   margin: 0;
-  color: var(--green-dark);
+  color: var(--forest-900);
   font-size: 0.82rem;
   font-weight: 700;
 }
@@ -146,6 +153,14 @@ body[data-app-mode="now"] .facility-plan-selection {
 @media (max-width: 780px) {
   .care-plan-editor-heading {
     display: grid;
+  }
+
+  .care-plan-editor-heading > div:last-child {
+    justify-items: start;
+  }
+
+  .care-plan-editor-heading > div:last-child p {
+    text-align: left;
   }
 
   .care-plan-fields {
