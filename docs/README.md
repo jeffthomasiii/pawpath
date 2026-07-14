@@ -6,15 +6,18 @@ This directory contains the product definition and implementation guidance for e
 
 1. [Why PawPath?](WHY_PAWPATH.md)
 2. [Product Vision](PRODUCT_VISION.md)
-3. [Proof-of-Concept Scope](POC_SCOPE.md)
-4. [Roadmap](ROADMAP.md)
-5. [Phase 1 Backlog](BACKLOG.md)
-6. [Implementation Notes](IMPLEMENTATION_NOTES.md)
-7. [Demo Script](DEMO_SCRIPT.md)
+3. [Brand Guide](BRAND_GUIDE.md)
+4. [Proof-of-Concept Scope](POC_SCOPE.md)
+5. [Roadmap](ROADMAP.md)
+6. [Phase 1 Backlog](BACKLOG.md)
+7. [Implementation Notes](IMPLEMENTATION_NOTES.md)
+8. [Demo Script](DEMO_SCRIPT.md)
+
+The Brand Guide is the durable source for PawPath voice, visual identity, color use, UI shape strategy, accessibility expectations, and brand-aware feature decisions.
 
 ## ChatGPT Project package
 
-Use the [PawPath ChatGPT Project Setup](chatgpt-project/README.md) to create a dedicated long-running workspace with paste-ready project instructions, curated source files, current-state handoff, engineering workflow, and starter prompts.
+Use the [PawPath ChatGPT Project Setup](chatgpt-project/README.md) to create a dedicated long-running workspace with paste-ready project instructions, curated source files, current-state handoff, engineering workflow, brand guidance, and starter prompts.
 
 ## Current product objective
 
