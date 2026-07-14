@@ -79,6 +79,20 @@ Last updated: July 2026
 - Responsive desktop and mobile presentation
 - Cross-tab storage update handling
 
+### Approved brand system
+
+- Product category: **Pet-care preparedness for the road**
+- Brand promise: **Travel with a care plan**
+- Creative direction: **Trail guide, not alert siren**
+- Established PawPath mark and wordmark remain the approved identity
+- Muted Pine, Sage, Mist, Stone, Amber, Ink, and restrained Danger palette
+- Open layout for orientation and explanatory content
+- Selective light cards for saved plans, decisions, details, and urgent information
+- List-row treatment for scan-heavy facility results
+- Modest rounding, minimal shadows, and color reserved for meaningful emphasis
+- Durable guidance is documented in `docs/BRAND_GUIDE.md`
+- `brand-refresh.css` provides the focused visual alignment layer without changing application behavior
+
 ## Current Phase 1 roadmap status
 
 Completed:
@@ -106,6 +120,7 @@ Remaining after Emergency Mode:
 - Curated demo data: Issue #10
 - Printable emergency card: Issue #11
 - Shareable POC validation: Issue #12
+- Brand alignment: Issue #24
 
 ## Technical architecture
 
@@ -119,6 +134,7 @@ Current major files include:
 - `selection.css`
 - `care-plan.css`
 - `emergency-fallback.css`
+- `brand-refresh.css`
 - `plan-summary.css`
 - `leaflet-local.css`
 - `app.js`
@@ -141,6 +157,7 @@ Current major files include:
 - No user accounts, cloud sync, or multi-plan storage
 - Several modules wrap global functions; careless script-order changes can break behavior
 - Browser geolocation and remote API behavior require deployed or local-server testing
+- Brand-layer visual behavior still requires deployed desktop and mobile browser review
 
 ## Immediate implementation objective
 
