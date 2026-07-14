@@ -10,7 +10,7 @@ PawPath is a mobile-friendly web application for campers, RV travelers, road-tri
 
 [Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
-The proof of concept now presents two distinct workflows: **Plan a Trip** for destination-based preparation and **Find Care Now** for immediate nearby-care access. Upcoming increments will add facility details, confidence indicators, primary and backup selection, saved care plans, Emergency Mode, and a printable emergency card.
+The proof of concept now presents two distinct workflows: **Plan a Trip** for destination-based preparation and **Find Care Now** for immediate nearby-care access. Selecting a result opens a facility-detail view with conservative care classification, confidence explanations, source disclosure, and call-ahead guidance. Upcoming increments will add primary and backup selection, saved care plans, Emergency Mode, and a printable emergency card.
 
 ## Why PawPath?
 
@@ -48,6 +48,10 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Switch between Plan a Trip and Find Care Now modes
 - Use destination-focused search language and actions for trip preparation
 - Emphasize current-location access for immediate nearby-care searches
+- Open the same facility-detail experience from a result card or map marker
+- Classify facilities conservatively as emergency, urgent, routine, or unknown
+- Show confidence states and plain-language explanations without relying only on color
+- Display missing information, OpenStreetMap source links, and call-ahead guidance honestly
 - Search by U.S. city, state, or ZIP code
 - Use browser geolocation to search near the current position
 - View veterinary clinics on an interactive Leaflet map
@@ -55,15 +59,13 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Select a clinic card to center and open its map marker
 - Open driving directions without embedding a paid map service
 - Responsive desktop, tablet, and mobile layouts
-- Keyboard-accessible mode controls, search controls, cards, and map markers
+- Keyboard-accessible mode controls, search controls, cards, detail drawer, and map markers
 - PawPath branded header and favicon
 
 ## Next proof-of-concept capabilities
 
 The remaining `v0.2 – Care Plan POC` work will add:
 
-- Facility-detail panels
-- Care-type and confidence indicators
 - Primary and backup facility selection
 - One locally saved active trip plan
 - Emergency Mode
@@ -76,7 +78,7 @@ See [Proof-of-Concept Scope](docs/POC_SCOPE.md) and [Roadmap](docs/ROADMAP.md).
 
 Phase 1 work is tracked in the [`v0.2 Care Plan POC` tracking issue](https://github.com/jeffthomasiii/pawpath/issues/13), with one issue for each feature package and its acceptance criteria.
 
-The next implementation task is [POC-02: Add facility detail and confidence states](https://github.com/jeffthomasiii/pawpath/issues/5).
+The next implementation task is [POC-03: Add primary and backup facility selection](https://github.com/jeffthomasiii/pawpath/issues/6).
 
 ## Product documentation
 
@@ -111,9 +113,9 @@ pawpath/
 ├── docs/                    # Product vision, POC scope, roadmap, backlog, and demo documentation
 ├── index.html               # Semantic application layout
 ├── styles.css               # Core responsive design system and components
-├── site-fixes.css           # Map, brand, and mode-layout enhancements
+├── site-fixes.css           # Map, brand, mode, and facility-detail enhancements
 ├── leaflet-local.css        # Locally hosted Leaflet layout styles
-├── app.js                   # Modes, map, geocoding, clinic search, filters, and UI state
+├── app.js                   # Modes, map, facility classification, detail rendering, search, filters, and UI state
 ├── map-layout-fix.js        # Defensive Leaflet resize handling
 └── README.md                # Project overview
 ```
