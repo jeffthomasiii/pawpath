@@ -9,8 +9,10 @@ persistCarePlan = function persistCarePlanWithSummary(message, announce = true) 
 };
 
 clearActiveCarePlan = function clearActiveCarePlanWithSummary() {
+  const hadSavedPlan = Boolean(hasSavedCarePlan || activeStoredPlan);
   originalClearActiveCarePlanForSummary();
   renderSavedPlanSummary();
+  return hadSavedPlan && !hasSavedCarePlan && !activeStoredPlan;
 };
 
 if (document.readyState === "loading") {
@@ -45,10 +47,15 @@ function initializeSavedPlanSummary() {
 
   planSummaryElements.edit.addEventListener("click", editSavedPlan);
   planSummaryElements.clear.addEventListener("click", () => {
-    clearActiveCarePlan();
-    announceSavedPlan("Saved plan cleared.");
+    if (clearActiveCarePlan()) announceSavedPlan("Saved plan cleared.");
   });
   planSummaryElements.emergency.addEventListener("click", openSavedPlanEmergencyMode);
+
+  document.querySelectorAll(".mode-option").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.mode === "plan") resetSavedPlanEmergencyState();
+    });
+  });
 
   renderSavedPlanSummary();
 }
@@ -101,7 +108,7 @@ function renderSavedPlanSummary() {
 
   if (!activeStoredPlan || !hasSavedCarePlan) {
     planSummaryElements.region.hidden = true;
-    planSummaryElements.region.classList.remove("is-emergency-active");
+    resetSavedPlanEmergencyState();
     planSummaryElements.facilities.innerHTML = "";
     return;
   }
@@ -132,7 +139,7 @@ function createSavedFacilityCard(roleLabel, facility, role) {
   card.innerHTML = `
     <div class="saved-facility-card-heading">
       <span class="selection-role-label ${roleClass}">${roleLabel}</span>
-      <span class="saved-facility-care-type">${escapeHtml(formatCareType(facility.careType))}</span>
+      <span class="saved-facility-care-type">${escapeHtml(formatSavedCareType(facility.careType))}</span>
     </div>
     <h3>${escapeHtml(facility.name)}</h3>
     <p>${escapeHtml(facility.address || "Address not listed")}</p>
@@ -171,7 +178,7 @@ function createFacilityDirectionsAction(facility) {
 
 function editSavedPlan() {
   setMode("plan", true);
-  planSummaryElements.region.classList.remove("is-emergency-active");
+  resetSavedPlanEmergencyState();
 
   const editor = document.getElementById("care-plan-editor");
   editor?.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
@@ -188,6 +195,12 @@ function openSavedPlanEmergencyMode() {
   const firstCall = planSummaryElements.region.querySelector('.saved-facility-card.is-primary a[href^="tel:"]');
   window.setTimeout(() => (firstCall || planSummaryElements.emergency).focus({ preventScroll: true }), 250);
   announceSavedPlan("Emergency Mode opened. Primary and Backup call and directions actions are ready.");
+}
+
+function resetSavedPlanEmergencyState() {
+  if (!planSummaryElements.region || !planSummaryElements.emergency) return;
+  planSummaryElements.region.classList.remove("is-emergency-active");
+  planSummaryElements.emergency.textContent = "Open Emergency Mode";
 }
 
 function announceSavedPlan(message) {
@@ -215,7 +228,7 @@ function formatSavedPlanTimestamp(value) {
   return date.toLocaleString([], { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" });
 }
 
-function formatCareType(value) {
+function formatSavedCareType(value) {
   if (value === "emergency") return "Emergency care";
   if (value === "urgent") return "Urgent care";
   if (value === "routine") return "Routine care";
