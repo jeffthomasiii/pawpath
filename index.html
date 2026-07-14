@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="site-fixes.css" />
     <link rel="stylesheet" href="selection.css" />
+    <link rel="stylesheet" href="care-plan.css" />
     <link rel="stylesheet" href="emergency-fallback.css" />
   </head>
 
@@ -86,6 +87,69 @@
           <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
         </form>
         <p id="mode-status" class="sr-only" aria-live="polite"></p>
+      </section>
+
+      <section id="care-plan-editor" class="care-plan-editor" aria-labelledby="care-plan-editor-title">
+        <div class="care-plan-editor-heading">
+          <div>
+            <p class="eyebrow">Plan a Trip</p>
+            <h2 id="care-plan-editor-title">Save the essential details for this trip.</h2>
+          </div>
+          <div>
+            <span id="care-plan-saved-state" class="care-plan-saved-state">Not saved yet</span>
+            <p>One active plan is stored only in this browser. No account or backend is required.</p>
+          </div>
+        </div>
+
+        <form id="care-plan-form" class="care-plan-form" novalidate>
+          <div class="care-plan-fields">
+            <div class="care-plan-field">
+              <label for="trip-name">Trip name <span aria-hidden="true">*</span></label>
+              <input id="trip-name" name="tripName" type="text" maxlength="80" autocomplete="off" placeholder="Big Bear camping trip" required />
+            </div>
+
+            <div class="care-plan-field">
+              <label for="trip-destination">Destination <span aria-hidden="true">*</span></label>
+              <input id="trip-destination" name="tripDestination" type="text" maxlength="140" autocomplete="off" required />
+            </div>
+
+            <div class="care-plan-field">
+              <label for="trip-start-date">Start date <span class="sr-only">optional</span></label>
+              <input id="trip-start-date" name="tripStartDate" type="date" />
+            </div>
+
+            <div class="care-plan-field">
+              <label for="trip-end-date">End date <span class="sr-only">optional</span></label>
+              <input id="trip-end-date" name="tripEndDate" type="date" />
+            </div>
+
+            <div class="care-plan-field">
+              <label for="pet-name">Pet name <span class="sr-only">optional</span></label>
+              <input id="pet-name" name="petName" type="text" maxlength="60" autocomplete="off" placeholder="Olive" />
+            </div>
+
+            <div class="care-plan-field">
+              <label for="owner-phone">Owner phone <span class="sr-only">optional</span></label>
+              <input id="owner-phone" name="ownerPhone" type="tel" maxlength="40" autocomplete="tel" placeholder="(555) 555-0123" />
+            </div>
+
+            <div class="care-plan-field is-wide">
+              <label for="pet-note">Important pet note <span class="sr-only">optional</span></label>
+              <textarea id="pet-note" name="petNote" maxlength="240" placeholder="Allergies, medications, temperament, or another short detail that may help during travel."></textarea>
+              <small>Keep this brief. Do not store medical records, identification documents, or other sensitive files in this proof of concept.</small>
+            </div>
+          </div>
+
+          <p class="care-plan-privacy-note">
+            <strong>Stored on this device:</strong> PawPath saves one care plan in this browser using local storage. Clearing browser data will remove it.
+          </p>
+
+          <div class="care-plan-actions">
+            <button id="save-care-plan" class="button button-primary" type="submit">Save care plan</button>
+            <button id="clear-care-plan" class="button button-secondary" type="button" hidden>Clear plan</button>
+          </div>
+          <p id="care-plan-status" class="care-plan-status" role="status" aria-live="polite"></p>
+        </form>
       </section>
 
       <section id="care-plan-selection" class="care-plan-selection" aria-labelledby="care-plan-selection-title">
@@ -240,6 +304,7 @@
     <script src="app.js" defer></script>
     <script src="emergency-fallback.js" defer></script>
     <script src="selection.js" defer></script>
+    <script src="care-plan.js" defer></script>
     <script src="map-layout-fix.js" defer></script>
   </body>
 </html>
