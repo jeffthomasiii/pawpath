@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="leaflet-local.css" />
     <link rel="stylesheet" href="styles.css" />
     <link rel="stylesheet" href="site-fixes.css" />
+    <link rel="stylesheet" href="selection.css" />
   </head>
 
   <body>
@@ -86,6 +87,39 @@
         <p id="mode-status" class="sr-only" aria-live="polite"></p>
       </section>
 
+      <section id="care-plan-selection" class="care-plan-selection" aria-labelledby="care-plan-selection-title">
+        <div class="care-plan-selection-heading">
+          <div>
+            <p class="eyebrow">Your care-plan choices</p>
+            <h2 id="care-plan-selection-title">Choose a primary and backup facility.</h2>
+          </div>
+          <p>Select a likely emergency or urgent-care facility first, then choose a distinct backup option.</p>
+        </div>
+
+        <div class="selection-slots">
+          <article id="primary-selection-slot" class="selection-slot" aria-labelledby="primary-selection-label">
+            <span id="primary-selection-label" class="selection-role-label is-primary">Primary</span>
+            <h3 id="primary-selection-name">No primary selected</h3>
+            <p id="primary-selection-meta">Choose a likely emergency or urgent-care facility from the map results.</p>
+            <div class="selection-slot-actions">
+              <button id="primary-selection-view" class="text-button" type="button" hidden>View details</button>
+              <button id="primary-selection-remove" class="text-button is-destructive" type="button" hidden>Remove</button>
+            </div>
+          </article>
+
+          <article id="backup-selection-slot" class="selection-slot" aria-labelledby="backup-selection-label">
+            <span id="backup-selection-label" class="selection-role-label is-backup">Backup</span>
+            <h3 id="backup-selection-name">No backup selected</h3>
+            <p id="backup-selection-meta">Choose a distinct backup facility in case the primary option is unavailable.</p>
+            <div class="selection-slot-actions">
+              <button id="backup-selection-view" class="text-button" type="button" hidden>View details</button>
+              <button id="backup-selection-remove" class="text-button is-destructive" type="button" hidden>Remove</button>
+            </div>
+          </article>
+        </div>
+        <p id="selection-status" class="sr-only" aria-live="polite"></p>
+      </section>
+
       <section class="discovery-layout" aria-label="Veterinary clinic finder">
         <aside class="results-panel" aria-labelledby="results-title">
           <div class="results-heading">
@@ -130,6 +164,20 @@
         </div>
 
         <p id="detail-confidence-explanation" class="confidence-explanation"></p>
+
+        <section class="facility-plan-selection" aria-labelledby="facility-plan-selection-title">
+          <div>
+            <h3 id="facility-plan-selection-title">Add to your trip care plan</h3>
+            <p id="detail-role-status">This facility has not been added to the care plan yet.</p>
+          </div>
+          <div class="facility-plan-buttons">
+            <button id="select-primary" class="plan-role-button is-primary" type="button">Select as Primary</button>
+            <button id="select-backup" class="plan-role-button is-backup" type="button">Select as Backup</button>
+          </div>
+          <p id="detail-plan-message" class="detail-plan-message">
+            Primary and Backup must be different facilities. You can replace or remove either choice at any time.
+          </p>
+        </section>
 
         <dl class="facility-facts">
           <div>
@@ -189,6 +237,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
     <script src="app.js" defer></script>
+    <script src="selection.js" defer></script>
     <script src="map-layout-fix.js" defer></script>
   </body>
 </html>
