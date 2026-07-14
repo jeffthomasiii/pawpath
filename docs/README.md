@@ -12,6 +12,10 @@ This directory contains the product definition and implementation guidance for e
 6. [Implementation Notes](IMPLEMENTATION_NOTES.md)
 7. [Demo Script](DEMO_SCRIPT.md)
 
+## ChatGPT Project package
+
+Use the [PawPath ChatGPT Project Setup](chatgpt-project/README.md) to create a dedicated long-running workspace with paste-ready project instructions, curated source files, current-state handoff, engineering workflow, and starter prompts.
+
 ## Current product objective
 
 Build `v0.2 – Care Plan POC` so a new viewer can understand within two minutes that PawPath is not merely a veterinarian map. It is a destination-based pet-care preparedness workflow with primary and backup facility selection, a saved care plan, Emergency Mode, and a printable emergency card.
