@@ -114,6 +114,66 @@
       </section>
     </main>
 
+    <dialog id="facility-detail" class="facility-detail" aria-labelledby="facility-detail-title">
+      <div class="facility-detail-shell">
+        <header class="facility-detail-header">
+          <div>
+            <p class="eyebrow">Facility details</p>
+            <h2 id="facility-detail-title">Veterinary facility</h2>
+          </div>
+          <button id="facility-detail-close" class="icon-button" type="button" aria-label="Close facility details">×</button>
+        </header>
+
+        <div class="facility-detail-badges" aria-label="Facility classification">
+          <span id="detail-care-type" class="detail-badge">Care type unknown</span>
+          <span id="detail-confidence" class="detail-badge detail-confidence">Needs confirmation</span>
+        </div>
+
+        <p id="detail-confidence-explanation" class="confidence-explanation"></p>
+
+        <dl class="facility-facts">
+          <div>
+            <dt>Address</dt>
+            <dd id="detail-address">Not listed</dd>
+          </div>
+          <div>
+            <dt>Distance</dt>
+            <dd id="detail-distance">Not available</dd>
+          </div>
+          <div>
+            <dt>Phone</dt>
+            <dd id="detail-phone">Not listed</dd>
+          </div>
+          <div>
+            <dt>Hours</dt>
+            <dd id="detail-hours">Not listed</dd>
+          </div>
+          <div>
+            <dt>Website</dt>
+            <dd id="detail-website-value">Not listed</dd>
+          </div>
+          <div>
+            <dt>Data source</dt>
+            <dd id="detail-source">OpenStreetMap</dd>
+          </div>
+        </dl>
+
+        <section class="source-disclosure" aria-labelledby="source-disclosure-title">
+          <h3 id="source-disclosure-title">How to use this information</h3>
+          <p id="detail-source-notes"></p>
+          <p class="call-ahead-note">
+            <strong>Call ahead:</strong> PawPath does not guarantee that a facility is open, available, or able to treat a specific pet or condition.
+          </p>
+        </section>
+
+        <div class="facility-detail-actions">
+          <a id="detail-call" class="button button-primary" href="#">Call facility</a>
+          <a id="detail-directions" class="button detail-action-secondary" href="#" target="_blank" rel="noopener noreferrer">Directions ↗</a>
+          <a id="detail-website" class="button detail-action-secondary" href="#" target="_blank" rel="noopener noreferrer">Website ↗</a>
+        </div>
+      </div>
+    </dialog>
+
     <footer class="site-footer">
       <p>Built for campers, travelers, and the pets who come along.</p>
       <p>© <span id="current-year"></span> PawPath</p>
