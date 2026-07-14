@@ -10,7 +10,7 @@ PawPath is a mobile-friendly web application for campers, RV travelers, road-tri
 
 [Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
-The proof of concept now presents two distinct workflows: **Plan a Trip** for destination-based preparation and **Find Care Now** for immediate nearby-care access. Selecting a result opens a facility-detail view with conservative care classification, confidence explanations, source disclosure, and call-ahead guidance. Upcoming increments will add primary and backup selection, saved care plans, Emergency Mode, and a printable emergency card.
+The proof of concept now presents two distinct workflows: **Plan a Trip** for destination-based preparation and **Find Care Now** for immediate nearby-care access. Users can review facility details and confidence information, then choose a Primary emergency or urgent-care option and a distinct Backup facility for the current session. Upcoming increments will save the full trip care plan, add Emergency Mode, and create a printable emergency card.
 
 ## Why PawPath?
 
@@ -52,22 +52,25 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Classify facilities conservatively as emergency, urgent, routine, or unknown
 - Show confidence states and plain-language explanations without relying only on color
 - Display missing information, OpenStreetMap source links, and call-ahead guidance honestly
+- Select one emergency or urgent-care facility as the Primary option
+- Select a distinct facility as the Backup option
+- Replace, move, view, or remove Primary and Backup selections during the current session
+- Show selected roles in the care-plan summary, facility cards, map markers, and facility details
 - Search by U.S. city, state, or ZIP code
 - Use browser geolocation to search near the current position
 - View veterinary clinics on an interactive Leaflet map
 - Filter results between all care, emergency, and routine clinics
-- Select a clinic card to center and open its map marker
 - Open driving directions without embedding a paid map service
 - Responsive desktop, tablet, and mobile layouts
-- Keyboard-accessible mode controls, search controls, cards, detail drawer, and map markers
+- Keyboard-accessible mode controls, search controls, cards, selections, detail drawer, and map markers
 - PawPath branded header and favicon
 
 ## Next proof-of-concept capabilities
 
 The remaining `v0.2 – Care Plan POC` work will add:
 
-- Primary and backup facility selection
 - One locally saved active trip plan
+- A persistent saved-plan summary
 - Emergency Mode
 - Curated demonstration data
 - Printable emergency card
@@ -78,7 +81,7 @@ See [Proof-of-Concept Scope](docs/POC_SCOPE.md) and [Roadmap](docs/ROADMAP.md).
 
 Phase 1 work is tracked in the [`v0.2 Care Plan POC` tracking issue](https://github.com/jeffthomasiii/pawpath/issues/13), with one issue for each feature package and its acceptance criteria.
 
-The next implementation task is [POC-03: Add primary and backup facility selection](https://github.com/jeffthomasiii/pawpath/issues/6).
+The next implementation task is [POC-04: Build and persist one active trip care plan](https://github.com/jeffthomasiii/pawpath/issues/7).
 
 ## Product documentation
 
@@ -114,8 +117,10 @@ pawpath/
 ├── index.html               # Semantic application layout
 ├── styles.css               # Core responsive design system and components
 ├── site-fixes.css           # Map, brand, mode, and facility-detail enhancements
+├── selection.css            # Primary and Backup selection components
 ├── leaflet-local.css        # Locally hosted Leaflet layout styles
 ├── app.js                   # Modes, map, facility classification, detail rendering, search, filters, and UI state
+├── selection.js             # Session-based Primary and Backup care-plan selection
 ├── map-layout-fix.js        # Defensive Leaflet resize handling
 └── README.md                # Project overview
 ```
@@ -155,7 +160,7 @@ PawPath is not a veterinary diagnosis or medical-triage service. It does not gua
 
 ## Privacy
 
-Location information is used in the browser to perform the requested nearby search. PawPath does not currently maintain a backend or store the user’s location. The first saved-plan implementation is intended to remain on the user’s device through browser `localStorage`.
+Location information is used in the browser to perform the requested nearby search. PawPath does not currently maintain a backend or store the user’s location. The next saved-plan implementation is intended to remain on the user’s device through browser `localStorage`.
 
 ## License
 
