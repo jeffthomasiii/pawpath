@@ -34,6 +34,32 @@ const MODE_CONTENT = {
   },
 };
 
+const CARE_TYPE_LABELS = {
+  emergency: "Emergency care",
+  urgent: "Urgent care",
+  routine: "Routine veterinary care",
+  unknown: "Care type unknown",
+};
+
+const CONFIDENCE_CONTENT = {
+  "demo-verified": {
+    label: "Demo verified",
+    explanation: "This demonstration record was manually reviewed on the date shown in its source notes.",
+  },
+  "source-listed": {
+    label: "Source listed",
+    explanation: "This information is shown as supplied by the listed data source. Contact the facility to confirm current services and availability.",
+  },
+  "likely-emergency": {
+    label: "Likely emergency",
+    explanation: "Emergency or urgent capability is inferred from the facility name or listing details and has not been independently verified by PawPath.",
+  },
+  "needs-confirmation": {
+    label: "Needs confirmation",
+    explanation: "Important listing details are missing or uncertain. Call the facility before relying on it for your trip plan.",
+  },
+};
+
 let map;
 let markerLayer;
 let clinics = [];
@@ -41,6 +67,7 @@ let activeFilter = "all";
 let activeMode = "plan";
 let currentSearchLabel = DEFAULT_LOCATION.label;
 let selectedClinicId = null;
+let lastDetailTrigger = null;
 const markersById = new Map();
 
 const elements = {};
@@ -79,6 +106,22 @@ function cacheElements() {
   elements.emptyTemplate = document.getElementById("empty-state-template");
   elements.filterButtons = [...document.querySelectorAll("[data-filter]")];
   elements.currentYear = document.getElementById("current-year");
+  elements.facilityDetail = document.getElementById("facility-detail");
+  elements.facilityDetailClose = document.getElementById("facility-detail-close");
+  elements.detailTitle = document.getElementById("facility-detail-title");
+  elements.detailCareType = document.getElementById("detail-care-type");
+  elements.detailConfidence = document.getElementById("detail-confidence");
+  elements.detailConfidenceExplanation = document.getElementById("detail-confidence-explanation");
+  elements.detailAddress = document.getElementById("detail-address");
+  elements.detailDistance = document.getElementById("detail-distance");
+  elements.detailPhone = document.getElementById("detail-phone");
+  elements.detailHours = document.getElementById("detail-hours");
+  elements.detailWebsiteValue = document.getElementById("detail-website-value");
+  elements.detailSource = document.getElementById("detail-source");
+  elements.detailSourceNotes = document.getElementById("detail-source-notes");
+  elements.detailCall = document.getElementById("detail-call");
+  elements.detailDirections = document.getElementById("detail-directions");
+  elements.detailWebsite = document.getElementById("detail-website");
 }
 
 function initializeMap() {
@@ -101,6 +144,11 @@ function initializeMap() {
 function bindEvents() {
   elements.searchForm.addEventListener("submit", handleSearchSubmit);
   elements.locationButton.addEventListener("click", handleGeolocation);
+  elements.facilityDetailClose.addEventListener("click", closeFacilityDetail);
+  elements.facilityDetail.addEventListener("click", (event) => {
+    if (event.target === elements.facilityDetail) closeFacilityDetail();
+  });
+  elements.facilityDetail.addEventListener("close", restoreDetailFocus);
 
   elements.modeButtons.forEach((button, index) => {
     button.addEventListener("click", () => setMode(button.dataset.mode, true));
@@ -317,7 +365,13 @@ function normalizeClinic(item, searchCenter) {
   const address = formatAddress(tags);
   const phone = tags.phone || tags["contact:phone"] || "";
   const website = normalizeWebsite(tags.website || tags["contact:website"] || "");
-  const emergency = isEmergencyClinic(tags, name);
+  const hours = tags.opening_hours || "";
+  const careType = classifyCareType(tags, name);
+  const confidence = classifyConfidence(tags, name, careType, phone, address);
+  const emergency = careType === "emergency" || careType === "urgent";
+  const source = "OpenStreetMap";
+  const sourceUrl = `https://www.openstreetmap.org/${item.type}/${item.id}`;
+  const sourceNotes = buildSourceNotes(confidence, careType);
 
   return {
     id: `${item.type}-${item.id}`,
@@ -325,7 +379,13 @@ function normalizeClinic(item, searchCenter) {
     address,
     phone,
     website,
+    hours,
+    careType,
+    confidence,
     emergency,
+    source,
+    sourceUrl,
+    sourceNotes,
     lat,
     lng,
     distanceMiles: haversineMiles(searchCenter.lat, searchCenter.lng, lat, lng),
@@ -343,9 +403,41 @@ function normalizeWebsite(value) {
   return /^https?:\/\//i.test(value) ? value : `https://${value}`;
 }
 
-function isEmergencyClinic(tags, name) {
-  const combined = `${name} ${tags.emergency || ""} ${tags.opening_hours || ""}`.toLowerCase();
-  return tags.emergency === "yes" || /emergency|24 hour|24-hour|urgent/.test(combined);
+function classifyCareType(tags, name) {
+  const normalizedName = name.toLowerCase();
+  const emergencyTag = String(tags.emergency || "").toLowerCase();
+  const speciality = String(tags["healthcare:speciality"] || "").toLowerCase();
+
+  if (emergencyTag === "yes" || speciality.includes("emergency")) return "emergency";
+  if (/urgent/.test(normalizedName)) return "urgent";
+  if (/emergency|24 hour|24-hour|24\/7/.test(normalizedName)) return "emergency";
+  if (tags.amenity === "veterinary") return "routine";
+  return "unknown";
+}
+
+function classifyConfidence(tags, name, careType, phone, address) {
+  const normalizedName = name.toLowerCase();
+  const emergencyTag = String(tags.emergency || "").toLowerCase();
+  const speciality = String(tags["healthcare:speciality"] || "").toLowerCase();
+  const hasExplicitEmergencySignal = emergencyTag === "yes" || speciality.includes("emergency");
+  const hasInferredEmergencySignal = /emergency|urgent|24 hour|24-hour|24\/7/.test(normalizedName);
+  const missingImportantDetails = !phone || address.startsWith("Address not listed");
+
+  if ((careType === "emergency" || careType === "urgent") && !hasExplicitEmergencySignal && hasInferredEmergencySignal) {
+    return "likely-emergency";
+  }
+  if (missingImportantDetails) return "needs-confirmation";
+  return "source-listed";
+}
+
+function buildSourceNotes(confidence, careType) {
+  if (confidence === "likely-emergency") {
+    return `The ${CARE_TYPE_LABELS[careType].toLowerCase()} classification is inferred from the listing name or source details. Confirm emergency capability, hours, and availability by phone.`;
+  }
+  if (confidence === "needs-confirmation") {
+    return "This OpenStreetMap listing is missing important contact or address details. Use the source link and call ahead before adding it to a care plan.";
+  }
+  return "Facility information is displayed from OpenStreetMap. PawPath has not independently verified current hours, availability, or treatment capabilities.";
 }
 
 function renderClinics() {
@@ -402,7 +494,7 @@ function createMarker(clinic) {
     <span>${escapeHtml(clinic.address)}</span>
   `);
 
-  marker.on("click", () => selectClinic(clinic.id, false));
+  marker.on("click", () => selectClinic(clinic.id, false, true, document.activeElement));
   return marker;
 }
 
@@ -411,7 +503,7 @@ function createClinicCard(clinic) {
   card.className = "clinic-card";
   card.tabIndex = 0;
   card.dataset.clinicId = clinic.id;
-  card.setAttribute("aria-label", `View ${clinic.name} on the map`);
+  card.setAttribute("aria-label", `View details for ${clinic.name}`);
 
   const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${clinic.lat},${clinic.lng}`;
 
@@ -422,7 +514,7 @@ function createClinicCard(clinic) {
         <p>${escapeHtml(clinic.address)}</p>
       </div>
       <span class="care-badge${clinic.emergency ? " is-emergency" : ""}">
-        ${clinic.emergency ? "Emergency" : "Veterinary"}
+        ${escapeHtml(CARE_TYPE_LABELS[clinic.careType])}
       </span>
     </div>
     <div class="card-meta">
@@ -431,27 +523,27 @@ function createClinicCard(clinic) {
       ${clinic.website ? `<a href="${escapeAttribute(clinic.website)}" target="_blank" rel="noopener noreferrer">Website</a>` : ""}
     </div>
     <div class="card-actions">
-      <span>${clinic.emergency ? "Emergency service indicated" : "Call to confirm services"}</span>
+      <span>${escapeHtml(CONFIDENCE_CONTENT[clinic.confidence].label)} · View details</span>
       <a class="directions-link" href="${directionsUrl}" target="_blank" rel="noopener noreferrer">Directions ↗</a>
     </div>
   `;
 
   card.addEventListener("click", (event) => {
     if (event.target.closest("a")) return;
-    selectClinic(clinic.id, true);
+    selectClinic(clinic.id, true, true, card);
   });
 
   card.addEventListener("keydown", (event) => {
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      selectClinic(clinic.id, true);
+      selectClinic(clinic.id, true, true, card);
     }
   });
 
   return card;
 }
 
-function selectClinic(id, focusMap) {
+function selectClinic(id, focusMap, openDetail = true, triggerElement = null) {
   selectedClinicId = id;
   document.querySelectorAll(".clinic-card").forEach((card) => {
     card.classList.toggle("is-selected", card.dataset.clinicId === id);
@@ -468,6 +560,77 @@ function selectClinic(id, focusMap) {
 
   const card = document.querySelector(`[data-clinic-id="${CSS.escape(id)}"]`);
   card?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  if (openDetail) {
+    openFacilityDetail(clinic, triggerElement || card || document.activeElement);
+  }
+}
+
+function openFacilityDetail(clinic, triggerElement) {
+  const confidenceContent = CONFIDENCE_CONTENT[clinic.confidence] || CONFIDENCE_CONTENT["needs-confirmation"];
+  lastDetailTrigger = triggerElement instanceof HTMLElement ? triggerElement : null;
+
+  elements.detailTitle.textContent = clinic.name;
+  elements.detailCareType.textContent = CARE_TYPE_LABELS[clinic.careType] || CARE_TYPE_LABELS.unknown;
+  elements.detailCareType.dataset.careType = clinic.careType;
+  elements.detailConfidence.textContent = confidenceContent.label;
+  elements.detailConfidence.dataset.confidence = clinic.confidence;
+  elements.detailConfidenceExplanation.textContent = confidenceContent.explanation;
+  elements.detailAddress.textContent = clinic.address || "Not listed";
+  elements.detailDistance.textContent = Number.isFinite(clinic.distanceMiles)
+    ? `${clinic.distanceMiles.toFixed(1)} miles from the search location`
+    : "Not available";
+  elements.detailPhone.textContent = clinic.phone || "Not listed";
+  elements.detailHours.textContent = clinic.hours || "Not listed — call to confirm";
+  elements.detailWebsiteValue.textContent = clinic.website ? getDisplayHostname(clinic.website) : "Not listed";
+  elements.detailSource.innerHTML = clinic.sourceUrl
+    ? `<a href="${escapeAttribute(clinic.sourceUrl)}" target="_blank" rel="noopener noreferrer">${escapeHtml(clinic.source)} listing ↗</a>`
+    : escapeHtml(clinic.source || "Source not listed");
+  elements.detailSourceNotes.textContent = clinic.sourceNotes;
+
+  const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${clinic.lat},${clinic.lng}`;
+  elements.detailDirections.href = directionsUrl;
+  configureOptionalAction(elements.detailCall, clinic.phone ? `tel:${normalizePhoneHref(clinic.phone)}` : "", "Call facility");
+  configureOptionalAction(elements.detailWebsite, clinic.website, "Website ↗");
+
+  if (!elements.facilityDetail.open) {
+    elements.facilityDetail.showModal();
+  }
+  requestAnimationFrame(() => elements.facilityDetailClose.focus());
+}
+
+function configureOptionalAction(element, href, label) {
+  element.textContent = href ? label : `${label.replace(" ↗", "")} unavailable`;
+  element.classList.toggle("is-disabled", !href);
+  element.setAttribute("aria-disabled", String(!href));
+  if (href) {
+    element.href = href;
+    element.removeAttribute("tabindex");
+  } else {
+    element.removeAttribute("href");
+    element.setAttribute("tabindex", "-1");
+  }
+}
+
+function closeFacilityDetail() {
+  if (elements.facilityDetail.open) elements.facilityDetail.close();
+}
+
+function restoreDetailFocus() {
+  if (lastDetailTrigger?.isConnected) lastDetailTrigger.focus();
+  lastDetailTrigger = null;
+}
+
+function normalizePhoneHref(phone) {
+  return phone.replace(/[^+\d]/g, "");
+}
+
+function getDisplayHostname(website) {
+  try {
+    return new URL(website).hostname.replace(/^www\./, "");
+  } catch {
+    return website;
+  }
 }
 
 function resetFilters() {
