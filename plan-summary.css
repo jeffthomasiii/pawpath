@@ -1,0 +1,189 @@
+.saved-plan-summary {
+  display: grid;
+  gap: 18px;
+  padding: clamp(20px, 4vw, 30px);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: linear-gradient(180deg, #f8fbf9, var(--white));
+  box-shadow: var(--shadow-sm);
+}
+
+.saved-plan-summary[hidden] {
+  display: none;
+}
+
+.saved-plan-summary.is-emergency-active {
+  border-color: rgba(163, 62, 50, 0.4);
+  background: linear-gradient(180deg, #fff5f2, var(--white));
+  box-shadow: 0 18px 48px rgba(163, 62, 50, 0.12);
+}
+
+.saved-plan-summary-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.saved-plan-summary-header h2 {
+  margin: 3px 0 2px;
+}
+
+.saved-plan-destination {
+  margin: 0;
+  color: var(--ink-500);
+}
+
+.saved-plan-emergency-button {
+  flex: 0 0 auto;
+  border-color: var(--danger);
+  background: var(--danger);
+  color: var(--white);
+}
+
+.saved-plan-emergency-button:hover,
+.saved-plan-emergency-button:focus-visible {
+  background: #862f27;
+}
+
+.saved-plan-trip-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  color: var(--ink-500);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.saved-plan-trip-meta span:not(:last-child)::after {
+  content: "•";
+  margin-left: 14px;
+  color: var(--amber-500);
+}
+
+.saved-plan-facilities {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.saved-facility-card {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--white);
+}
+
+.saved-facility-card.is-primary {
+  border-color: rgba(163, 62, 50, 0.3);
+}
+
+.saved-facility-card.is-backup {
+  border-color: rgba(216, 148, 63, 0.4);
+}
+
+.saved-facility-card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.saved-facility-care-type {
+  color: var(--ink-500);
+  font-size: 0.72rem;
+  font-weight: 800;
+}
+
+.saved-facility-card h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.saved-facility-card p {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 0.8rem;
+  line-height: 1.45;
+}
+
+.saved-facility-distance {
+  font-weight: 700;
+}
+
+.saved-facility-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.saved-facility-action {
+  min-height: 38px;
+  padding: 8px 12px;
+  font-size: 0.78rem;
+}
+
+.saved-plan-summary-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.saved-plan-secondary-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.saved-plan-call-ahead {
+  margin: 0;
+  color: var(--ink-500);
+  font-size: 0.76rem;
+}
+
+@media (max-width: 760px) {
+  .saved-plan-summary-header,
+  .saved-plan-summary-footer {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .saved-plan-emergency-button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .saved-plan-facilities {
+    grid-template-columns: 1fr;
+  }
+
+  .saved-plan-call-ahead {
+    order: -1;
+  }
+}
+
+@media (max-width: 480px) {
+  .saved-plan-trip-meta {
+    display: grid;
+    gap: 5px;
+  }
+
+  .saved-plan-trip-meta span::after {
+    display: none;
+  }
+
+  .saved-facility-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .saved-facility-action {
+    justify-content: center;
+    width: 100%;
+  }
+}
