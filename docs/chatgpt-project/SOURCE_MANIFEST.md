@@ -22,16 +22,33 @@ Add these first:
    - complete product positioning and competitive distinction
 5. `../PRODUCT_VISION.md`
    - mission, jobs to be done, principles, and product direction
-6. `../POC_SCOPE.md`
+6. `../BRAND_GUIDE.md`
+   - approved brand positioning, voice, palette, UI shape strategy, accessibility expectations, and feature-decision guardrails
+7. `../POC_SCOPE.md`
    - proof-of-concept requirements and release criteria
-7. `../ROADMAP.md`
+8. `../ROADMAP.md`
    - phased development plan
-8. `../IMPLEMENTATION_NOTES.md`
+9. `../IMPLEMENTATION_NOTES.md`
    - state, storage, data, confidence, and architecture guidance
-9. `../PHASE_1_RELEASE_PLAN.md`
+10. `../PHASE_1_RELEASE_PLAN.md`
    - increments and release gate
-10. `../../README.md`
+11. `../../README.md`
    - public repository overview and current capabilities
+
+## Brand use in ChatGPT
+
+For feature proposals, UX recommendations, mockups, documentation, and implementation planning, use `../BRAND_GUIDE.md` as the source for:
+
+- calm, practical, transparent voice
+- approved Pine / Sage / Mist / Stone / Amber / Ink / Danger palette
+- preservation of the established PawPath mark and wordmark
+- open layouts for orientation
+- selective cards for key decisions
+- list rows for scan-heavy results
+- modest rounding and minimal shadows
+- accessible, product-first emphasis
+
+Brand guidance does not override product safety, current `main` behavior, active issue acceptance criteria, or the immediate Phase 1 roadmap.
 
 ## Optional sources
 
@@ -61,8 +78,9 @@ After each significant merged increment:
 1. Update `CURRENT_STATE.md` in the repository.
 2. Update the README when public capabilities or the next task change.
 3. Replace the old uploaded `CURRENT_STATE.md` in the ChatGPT Project, or save the updated content as a new project source.
-4. Save important decision responses to the project sources when they establish lasting product direction.
-5. Avoid uploading every implementation chat; keep durable decisions and concise handoffs instead.
+4. Replace the uploaded `BRAND_GUIDE.md` when approved brand decisions change.
+5. Save important decision responses to the project sources when they establish lasting product direction.
+6. Avoid uploading every implementation chat; keep durable decisions and concise handoffs instead.
 
 ## Suggested project organization
 
