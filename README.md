@@ -10,7 +10,7 @@ PawPath is a mobile-friendly web application for campers, RV travelers, road-tri
 
 [Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
-The proof of concept now presents two distinct workflows: **Plan a Trip** for destination-based preparation and **Find Care Now** for immediate nearby-care access. Users can review facility details and confidence information, then choose a Primary emergency or urgent-care option and a distinct Backup facility for the current session. When the normal nearby search contains no emergency or urgent-care option, PawPath also checks a 30-mile fallback radius and adds the nearest qualifying listing. Upcoming increments will save the full trip care plan, add Emergency Mode, and create a printable emergency card.
+The proof of concept now presents two functionally distinct workflows. **Plan a Trip** lets users enter trip details, choose Primary and Backup facilities, and save one active care plan locally in the browser. **Find Care Now** hides the planning form and focuses on immediate nearby-care search. When the normal nearby search contains no emergency or urgent-care option, PawPath also checks a 30-mile fallback radius and either adds the nearest qualifying listing or clearly explains that OpenStreetMap could not identify one.
 
 ## Why PawPath?
 
@@ -37,15 +37,23 @@ PawPath is organized around two core experiences:
 
 ### Plan a Trip
 
-Search around a campground, destination, ZIP code, or overnight stop; review care options; choose a primary facility and backup; and save the essential details before leaving.
+Search around a campground, destination, ZIP code, or overnight stop; enter trip and pet details; choose a Primary facility and Backup; and save the essential information before leaving.
 
 ### Find Care Now
 
-Use the current location to prioritize likely emergency-care options and quickly access call, directions, backup, and saved pet-information actions.
+Use the current location to prioritize likely emergency-care options and quickly access call, directions, backup, and saved pet-information actions without showing the trip-planning form.
 
 ## Current capabilities
 
 - Switch between Plan a Trip and Find Care Now modes
+- Show a trip-plan editor only in Plan a Trip mode
+- Save one active care plan to browser `localStorage` using `pawpath.activeCarePlan.v1`
+- Store a trip name, destination, optional dates, pet name, owner phone, and one brief important note
+- Save and restore Primary and Backup facility snapshots after a full page refresh
+- Validate stored schema and fail safely when stored data is malformed or unsupported
+- Automatically update a saved plan when trip details or facility choices change
+- Clear the saved plan and selections with confirmation
+- Keep saved plan data entirely in the browser without an account or backend
 - Use destination-focused search language and actions for trip preparation
 - Emphasize current-location access for immediate nearby-care searches
 - Search a 30-mile fallback radius for the nearest emergency or urgent-care option only when none appears in the normal nearby results
@@ -55,7 +63,7 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Display missing information, OpenStreetMap source links, and call-ahead guidance honestly
 - Select one emergency or urgent-care facility as the Primary option
 - Select a distinct facility as the Backup option
-- Replace, move, view, or remove Primary and Backup selections during the current session
+- Replace, move, view, or remove Primary and Backup selections
 - Show selected roles in the care-plan summary, facility cards, map markers, and facility details
 - Search by U.S. city, state, or ZIP code
 - Use browser geolocation to search near the current position
@@ -63,15 +71,14 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Filter results between all care, emergency, and routine clinics
 - Open driving directions without embedding a paid map service
 - Responsive desktop, tablet, and mobile layouts
-- Keyboard-accessible mode controls, search controls, cards, selections, detail drawer, and map markers
+- Keyboard-accessible mode controls, search controls, cards, selections, forms, detail drawer, and map markers
 - PawPath branded header and favicon
 
 ## Next proof-of-concept capabilities
 
 The remaining `v0.2 – Care Plan POC` work will add:
 
-- One locally saved active trip plan
-- A persistent saved-plan summary
+- A persistent saved-plan summary optimized for quick review
 - Emergency Mode
 - Curated demonstration data
 - Printable emergency card
@@ -82,7 +89,7 @@ See [Proof-of-Concept Scope](docs/POC_SCOPE.md) and [Roadmap](docs/ROADMAP.md).
 
 Phase 1 work is tracked in the [`v0.2 Care Plan POC` tracking issue](https://github.com/jeffthomasiii/pawpath/issues/13), with one issue for each feature package and its acceptance criteria.
 
-The next implementation task is [POC-04: Build and persist one active trip care plan](https://github.com/jeffthomasiii/pawpath/issues/7).
+The next implementation task is [POC-05: Add persistent saved-plan summary](https://github.com/jeffthomasiii/pawpath/issues/8).
 
 ## Product documentation
 
@@ -105,9 +112,9 @@ The next implementation task is [POC-04: Build and persist one active trip care 
 - [OpenStreetMap](https://www.openstreetmap.org/) map tiles and clinic data
 - [Nominatim](https://nominatim.org/) for destination geocoding
 - [Overpass API](https://overpass-api.de/) for nearby veterinary-facility queries
-- Browser `localStorage` planned for the first saved care-plan implementation
+- Browser `localStorage` for the active care plan
 
-PawPath does not require a Google Maps API key. Google Maps is currently used only as an external destination for the **Directions** link.
+PawPath does not require a Google Maps API key. Google Maps is currently used only as an external destination for the **Directions** and emergency-search links.
 
 ## Project structure
 
@@ -119,11 +126,13 @@ pawpath/
 ├── styles.css               # Core responsive design system and components
 ├── site-fixes.css           # Map, brand, mode, and facility-detail enhancements
 ├── selection.css            # Primary and Backup selection components
+├── care-plan.css            # Saved active care-plan editor and mode-specific presentation
 ├── emergency-fallback.css   # Extended emergency-result presentation
 ├── leaflet-local.css        # Locally hosted Leaflet layout styles
 ├── app.js                   # Modes, map, facility classification, detail rendering, search, filters, and UI state
 ├── emergency-fallback.js    # Conditional 30-mile emergency and urgent-care fallback search
-├── selection.js             # Session-based Primary and Backup care-plan selection
+├── selection.js             # Primary and Backup care-plan selection
+├── care-plan.js             # Versioned local storage, validation, restore, update, and clear behavior
 ├── map-layout-fix.js        # Defensive Leaflet resize handling
 └── README.md                # Project overview
 ```
@@ -163,7 +172,7 @@ PawPath is not a veterinary diagnosis or medical-triage service. It does not gua
 
 ## Privacy
 
-Location information is used in the browser to perform the requested nearby search. PawPath does not currently maintain a backend or store the user’s location. The next saved-plan implementation is intended to remain on the user’s device through browser `localStorage`.
+Location information is used in the browser to perform the requested nearby search. PawPath does not currently maintain a backend or store the user’s location remotely. The active care plan is saved only in the current browser. Users should not enter medical documents, identification records, financial information, or other unnecessary sensitive data into the proof of concept.
 
 ## License
 

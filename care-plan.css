@@ -1,0 +1,185 @@
+.care-plan-editor {
+  display: grid;
+  gap: 22px;
+  padding: clamp(22px, 4vw, 34px);
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: var(--white);
+  box-shadow: var(--shadow-sm);
+}
+
+.care-plan-editor[hidden] {
+  display: none;
+}
+
+.care-plan-editor-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.care-plan-editor-heading h2 {
+  margin: 3px 0 0;
+}
+
+.care-plan-editor-heading > div:last-child {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  max-width: 520px;
+}
+
+.care-plan-editor-heading > div:last-child p {
+  margin: 0;
+  color: var(--ink-500);
+  line-height: 1.55;
+  text-align: right;
+}
+
+.care-plan-saved-state {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: var(--sage-50);
+  color: var(--ink-500);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.care-plan-saved-state.is-saved {
+  background: var(--sage-100);
+  color: var(--forest-900);
+}
+
+.care-plan-form {
+  display: grid;
+  gap: 20px;
+}
+
+.care-plan-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.care-plan-field {
+  display: grid;
+  gap: 7px;
+}
+
+.care-plan-field.is-wide {
+  grid-column: 1 / -1;
+}
+
+.care-plan-field label {
+  color: var(--ink-900);
+  font-size: 0.84rem;
+  font-weight: 800;
+}
+
+.care-plan-field input,
+.care-plan-field textarea {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--ink-900);
+  font: inherit;
+}
+
+.care-plan-field input {
+  min-height: 46px;
+  padding: 0 13px;
+}
+
+.care-plan-field textarea {
+  min-height: 92px;
+  padding: 12px 13px;
+  resize: vertical;
+}
+
+.care-plan-field input:focus,
+.care-plan-field textarea:focus {
+  border-color: var(--forest-700);
+  outline: 3px solid rgba(43, 106, 89, 0.16);
+  outline-offset: 1px;
+}
+
+.care-plan-field small {
+  color: var(--ink-500);
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.care-plan-privacy-note {
+  margin: 0;
+  padding: 12px 14px;
+  border-left: 3px solid var(--amber-500);
+  border-radius: 0 10px 10px 0;
+  background: #fff9ed;
+  color: #675434;
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.care-plan-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.care-plan-status {
+  min-height: 1.25em;
+  margin: 0;
+  color: var(--forest-900);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.care-plan-status.is-error {
+  color: var(--danger);
+}
+
+body[data-app-mode="now"] .care-plan-editor,
+body[data-app-mode="now"] .care-plan-selection,
+body[data-app-mode="now"] .facility-plan-selection {
+  display: none;
+}
+
+@media (max-width: 780px) {
+  .care-plan-editor-heading {
+    display: grid;
+  }
+
+  .care-plan-editor-heading > div:last-child {
+    justify-items: start;
+  }
+
+  .care-plan-editor-heading > div:last-child p {
+    text-align: left;
+  }
+
+  .care-plan-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .care-plan-field.is-wide {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  .care-plan-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .care-plan-actions .button {
+    justify-content: center;
+    width: 100%;
+  }
+}
