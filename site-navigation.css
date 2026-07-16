@@ -1,0 +1,56 @@
+/* Header utility navigation for the application and documentation. */
+
+.site-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.header-link {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 13px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--white);
+  color: var(--forest-900);
+  box-shadow: none;
+  font-size: 0.82rem;
+  font-weight: 750;
+  text-decoration: none;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
+.header-link:hover {
+  border-color: var(--forest-700);
+  background: var(--sage-50);
+}
+
+.header-link:focus-visible {
+  outline: 3px solid rgba(95, 127, 115, 0.46);
+  outline-offset: 3px;
+}
+
+@media (max-width: 780px) {
+  .site-header-actions {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 460px) {
+  .header-link {
+    min-height: 38px;
+    padding: 7px 10px;
+    font-size: 0.78rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .header-link {
+    transition: none;
+  }
+}
