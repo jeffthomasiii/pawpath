@@ -32,7 +32,6 @@
     }
   ];
 
-  const blockedPublicReference = /chatgpt|brand[_\s-]?guide|phase\s*1\s*backlog|implementation[_\s-]?notes|demo[_\s-]?script/i;
   const home = document.querySelector("#docs-home");
   const documentView = document.querySelector("#document-view");
   const documentTitle = document.querySelector("#document-title");
@@ -89,12 +88,6 @@
   const makeRenderedLinksSafe = () => {
     markdownContent.querySelectorAll("a[href]").forEach((link) => {
       const href = link.getAttribute("href") || "";
-      const label = link.textContent || "";
-
-      if (blockedPublicReference.test(`${href} ${label}`)) {
-        removeBlockedReference(link);
-        return;
-      }
 
       const matchingDocument = documents.find((documentItem) => href.endsWith(documentItem.file));
       if (matchingDocument) {
@@ -110,14 +103,6 @@
       if (/^https?:\/\//i.test(href)) {
         link.setAttribute("target", "_blank");
         link.setAttribute("rel", "noopener noreferrer");
-      }
-    });
-  };
-
-  const removeBlockedRenderedSections = () => {
-    markdownContent.querySelectorAll("h1, h2, h3, h4, p, li").forEach((element) => {
-      if (blockedPublicReference.test(element.textContent || "")) {
-        element.remove();
       }
     });
   };
@@ -155,7 +140,6 @@
       const rendered = window.marked.parse(markdown, { gfm: true });
       markdownContent.innerHTML = window.DOMPurify.sanitize(rendered, { USE_PROFILES: { html: true } });
       markdownContent.querySelector("h1")?.remove();
-      removeBlockedRenderedSections();
       makeRenderedLinksSafe();
       documentStatus.hidden = true;
       documentTitle.focus();
