@@ -159,9 +159,7 @@
       markdownContent.innerHTML = window.DOMPurify.sanitize(rendered, { USE_PROFILES: { html: true } });
 
       const firstHeading = markdownContent.querySelector("h1");
-      if (firstHeading && firstHeading.textContent.trim().toLowerCase() === doc.title.toLowerCase()) {
-        firstHeading.remove();
-      }
+      firstHeading?.remove();
 
       makeRenderedLinksSafe();
       documentStatus.hidden = true;
