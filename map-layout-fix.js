@@ -20,6 +20,11 @@ mobilePolishStylesheet.rel = "stylesheet";
 mobilePolishStylesheet.href = "mobile-polish.css";
 document.head.append(mobilePolishStylesheet);
 
+const mobileDiscoveryLayoutStylesheet = document.createElement("link");
+mobileDiscoveryLayoutStylesheet.rel = "stylesheet";
+mobileDiscoveryLayoutStylesheet.href = "mobile-discovery-layout.css";
+document.head.append(mobileDiscoveryLayoutStylesheet);
+
 const planSummaryScript = document.createElement("script");
 planSummaryScript.src = "plan-summary.js";
 planSummaryScript.async = false;
