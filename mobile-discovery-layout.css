@@ -34,6 +34,7 @@
   .results-panel {
     padding: 8px 14px 20px;
     scroll-padding-top: 0;
+    overflow-anchor: none;
   }
 
   .results-heading {
@@ -48,6 +49,10 @@
 
   .filter-row > * {
     flex-shrink: 0;
+  }
+
+  .expanded-emergency-search-notice {
+    overflow-anchor: none;
   }
 
   body[data-mobile-discovery="results"] .map-panel,
