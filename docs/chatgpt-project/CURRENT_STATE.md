@@ -31,6 +31,10 @@ Last updated: August 2026
   - trip-plan editor
   - Primary and Backup selection controls
   - save and update one active care plan
+  - phone-only guided workflow: **Trip & pet → Choose care → Review & save**
+  - only one mobile planning stage is expanded at a time
+  - Results / Map appear only during the mobile Choose care stage
+  - completed stages collapse into concise summaries without recreating or discarding field values
 - **Find Care Now**
   - immediate-care language
   - current-location emphasis
@@ -43,6 +47,17 @@ Last updated: August 2026
   - hides map exploration, filters, search, and planning controls while active
   - provides call-ahead and availability guidance without diagnosis or treatment claims
   - supports explicit exit, Escape-key exit, and focus restoration
+
+### Mobile web-app shell
+
+- Phone-only compact PawPath app header
+- Persistent bottom navigation for **Plan**, **Care Now**, and **Saved**
+- Dedicated Saved Plan destination without scrolling through the main page
+- Results / Map switcher so mobile discovery uses one primary task surface at a time
+- Facility detail presented as a near-full-height mobile bottom sheet
+- Emergency Mode presented as a full-height mobile takeover
+- Mobile planning stepper with progress, stage summaries, back-editing, and a dedicated review surface
+- Existing desktop/tablet presentation remains separate and unchanged by the mobile-only shell rules
 
 ### Facility evaluation
 
@@ -110,6 +125,8 @@ Completed:
 - POC-04: Persistent active care plan
 - POC-05: Persistent saved-plan summary
 - POC-06: Full Emergency Mode
+- POC-06.5: Mobile web-app shell
+- POC-06.6: Guided mobile Plan workflow
 
 Next:
 
@@ -124,6 +141,8 @@ Remaining after curated demonstration data:
 
 - Phase 1 tracker: Issue #13
 - Full Emergency Mode: Issue #9 — completed
+- Mobile web-app shell: Issue #36 — completed
+- Guided mobile Plan workflow: Issue #40 — completed
 - Curated demo data: Issue #10
 - Printable emergency card: Issue #11
 - Shareable POC validation: Issue #12
@@ -143,15 +162,20 @@ Current major files include:
 - `emergency-fallback.css`
 - `brand-refresh.css`
 - `plan-summary.css`
+- `mobile-app.css`
+- `mobile-plan.css`
 - `leaflet-local.css`
 - `app.js`
 - `emergency-fallback.js`
 - `selection.js`
 - `care-plan.js`
 - `plan-summary.js`
+- `mobile-app.js`
+- `mobile-app-sync.js`
+- `mobile-plan.js`
 - `map-layout-fix.js`
 
-`map-layout-fix.js` dynamically loads `plan-summary.css` and `plan-summary.js` after the core care-plan module. The full Emergency Mode remains implemented inside the saved-plan summary module so it uses the same validated stored-plan state without introducing a second storage model.
+`map-layout-fix.js` dynamically loads the late integration modules after the core care-plan module. The order is saved-plan summary, mobile app shell, mobile saved-plan synchronization, then the mobile Plan stepper. This ordering matters because later modules extend shared global functions.
 
 ## Known limitations and risks
 
@@ -166,7 +190,7 @@ Current major files include:
 - No user accounts, cloud sync, or multi-plan storage
 - Several modules wrap global functions; careless script-order changes can break behavior
 - Browser geolocation and remote API behavior require deployed or local-server testing
-- Emergency Mode still requires deployed desktop and mobile browser validation for focus behavior, phone links, directions, restored plans, and responsive layout
+- The mobile web-app shell and guided Plan workflow require deployed iPhone Safari and Android Chrome validation, especially for viewport height, safe areas, stage transitions, Leaflet resizing, focus, and restored saved-plan editing
 
 ## Immediate implementation objective
 
