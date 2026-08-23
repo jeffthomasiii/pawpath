@@ -1,6 +1,6 @@
 # PawPath Current State
 
-Last updated: July 2026
+Last updated: August 2026
 
 ## Live application
 
@@ -35,7 +35,14 @@ Last updated: July 2026
   - immediate-care language
   - current-location emphasis
   - planning editor and selection controls hidden
-- Saved-plan summary includes an emergency-focused transition, but the full Emergency Mode workflow remains the next major increment.
+- **Emergency Mode**
+  - opens from a valid saved care plan
+  - presents the saved Primary facility first with large Call and Directions actions
+  - keeps the saved Backup immediately below
+  - includes saved pet name, owner phone, and important note
+  - hides map exploration, filters, search, and planning controls while active
+  - provides call-ahead and availability guidance without diagnosis or treatment claims
+  - supports explicit exit, Escape-key exit, and focus restoration
 
 ### Facility evaluation
 
@@ -102,21 +109,21 @@ Completed:
 - POC-03: Primary and Backup selection
 - POC-04: Persistent active care plan
 - POC-05: Persistent saved-plan summary
+- POC-06: Full Emergency Mode
 
 Next:
 
-- POC-06: Full Emergency Mode
-
-Remaining after Emergency Mode:
-
 - POC-07: Curated demonstration data
+
+Remaining after curated demonstration data:
+
 - POC-08: Printable emergency card
 - POC-09: Shareable POC validation
 
 ## Important GitHub references
 
 - Phase 1 tracker: Issue #13
-- Full Emergency Mode: Issue #9
+- Full Emergency Mode: Issue #9 — completed
 - Curated demo data: Issue #10
 - Printable emergency card: Issue #11
 - Shareable POC validation: Issue #12
@@ -144,6 +151,8 @@ Current major files include:
 - `plan-summary.js`
 - `map-layout-fix.js`
 
+`map-layout-fix.js` dynamically loads `plan-summary.css` and `plan-summary.js` after the core care-plan module. The full Emergency Mode remains implemented inside the saved-plan summary module so it uses the same validated stored-plan state without introducing a second storage model.
+
 ## Known limitations and risks
 
 - No automated browser-test suite
@@ -157,8 +166,8 @@ Current major files include:
 - No user accounts, cloud sync, or multi-plan storage
 - Several modules wrap global functions; careless script-order changes can break behavior
 - Browser geolocation and remote API behavior require deployed or local-server testing
-- Brand-layer visual behavior still requires deployed desktop and mobile browser review
+- Emergency Mode still requires deployed desktop and mobile browser validation for focus behavior, phone links, directions, restored plans, and responsive layout
 
 ## Immediate implementation objective
 
-Build a full Emergency Mode that is clearly different from ordinary Find Care Now. It should prioritize the saved Primary and Backup facilities, immediate Call and Directions actions, current-location relevance, and a minimal decision path during a stressful situation.
+Add curated demonstration data for one or two transparent example destinations so PawPath can reliably demonstrate the complete Plan a Trip → saved care plan → Emergency Mode workflow even when live OpenStreetMap facility data is sparse.
