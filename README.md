@@ -10,7 +10,7 @@ PawPath is a mobile-friendly web application for campers, RV travelers, road-tri
 
 [Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
-The proof of concept now presents two functionally distinct workflows. **Plan a Trip** lets users enter trip details, choose Primary and Backup facilities, and save one active care plan locally in the browser. **Find Care Now** hides the planning form and focuses on immediate nearby-care search. When the normal nearby search contains no emergency or urgent-care option, PawPath also checks a 30-mile fallback radius and either adds the nearest qualifying listing or clearly explains that OpenStreetMap could not identify one.
+The proof of concept now presents two functionally distinct workflows. **Plan a Trip** lets users enter trip details, choose Primary and Backup facilities, and save one active care plan locally in the browser. **Find Care Now** hides the planning form and focuses on immediate nearby-care search. A saved plan can also open **Emergency Mode**, which removes unrelated planning and map controls, presents the saved Primary facility first with immediate Call and Directions actions, keeps the Backup directly below, and shows saved pet and owner details with call-ahead guidance. When the normal nearby search contains no emergency or urgent-care option, PawPath also checks a 30-mile fallback radius and either adds the nearest qualifying listing or clearly explains that OpenStreetMap could not identify one.
 
 ## Why PawPath?
 
@@ -43,6 +43,10 @@ Search around a campground, destination, ZIP code, or overnight stop; enter trip
 
 Use the current location to prioritize likely emergency-care options and quickly access call, directions, backup, and saved pet-information actions without showing the trip-planning form.
 
+### Emergency Mode
+
+Open the saved care plan as a focused call-and-go view. The Primary facility appears first with large Call and Directions actions, the Backup remains immediately available, and saved pet and owner information stays visible without returning to search.
+
 ## Current capabilities
 
 - Switch between Plan a Trip and Find Care Now modes
@@ -54,6 +58,13 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Automatically update a saved plan when trip details or facility choices change
 - Clear the saved plan and selections with confirmation
 - Keep saved plan data entirely in the browser without an account or backend
+- Show a persistent saved-plan summary with trip details, Primary, Backup, Call, Directions, Edit, Clear, and Open Emergency Mode actions
+- Open a focused Emergency Mode from a valid saved plan
+- Present the Primary facility first with large Call and Directions actions
+- Keep the Backup facility immediately below without requiring another search
+- Show saved pet name, owner phone, and important note in Emergency Mode
+- Hide search, filters, planning controls, and map exploration while Emergency Mode is active
+- Exit Emergency Mode explicitly or with Escape, with keyboard focus restored appropriately
 - Use destination-focused search language and actions for trip preparation
 - Emphasize current-location access for immediate nearby-care searches
 - Search a 30-mile fallback radius for the nearest emergency or urgent-care option only when none appears in the normal nearby results
@@ -71,17 +82,16 @@ Use the current location to prioritize likely emergency-care options and quickly
 - Filter results between all care, emergency, and routine clinics
 - Open driving directions without embedding a paid map service
 - Responsive desktop, tablet, and mobile layouts
-- Keyboard-accessible mode controls, search controls, cards, selections, forms, detail drawer, and map markers
+- Keyboard-accessible mode controls, search controls, cards, selections, forms, detail drawer, saved-plan actions, Emergency Mode, and map markers
 - PawPath branded header and favicon
 
 ## Next proof-of-concept capabilities
 
 The remaining `v0.2 – Care Plan POC` work will add:
 
-- A persistent saved-plan summary optimized for quick review
-- Emergency Mode
-- Curated demonstration data
+- Curated demonstration data for one or two transparent example destinations
 - Printable emergency card
+- Shareable POC validation and two-minute demo testing
 
 See [Proof-of-Concept Scope](docs/POC_SCOPE.md) and [Roadmap](docs/ROADMAP.md).
 
@@ -89,7 +99,7 @@ See [Proof-of-Concept Scope](docs/POC_SCOPE.md) and [Roadmap](docs/ROADMAP.md).
 
 Phase 1 work is tracked in the [`v0.2 Care Plan POC` tracking issue](https://github.com/jeffthomasiii/pawpath/issues/13), with one issue for each feature package and its acceptance criteria.
 
-The next implementation task is [POC-05: Add persistent saved-plan summary](https://github.com/jeffthomasiii/pawpath/issues/8).
+The next implementation task is [POC-07: Add curated demonstration data](https://github.com/jeffthomasiii/pawpath/issues/10).
 
 ## Product documentation
 
@@ -128,12 +138,15 @@ pawpath/
 ├── selection.css            # Primary and Backup selection components
 ├── care-plan.css            # Saved active care-plan editor and mode-specific presentation
 ├── emergency-fallback.css   # Extended emergency-result presentation
+├── brand-refresh.css        # Approved PawPath visual alignment layer
+├── plan-summary.css         # Saved-plan summary and focused Emergency Mode presentation
 ├── leaflet-local.css        # Locally hosted Leaflet layout styles
 ├── app.js                   # Modes, map, facility classification, detail rendering, search, filters, and UI state
 ├── emergency-fallback.js    # Conditional 30-mile emergency and urgent-care fallback search
 ├── selection.js             # Primary and Backup care-plan selection
 ├── care-plan.js             # Versioned local storage, validation, restore, update, and clear behavior
-├── map-layout-fix.js        # Defensive Leaflet resize handling
+├── plan-summary.js          # Persistent saved-plan summary and Emergency Mode behavior
+├── map-layout-fix.js        # Saved-plan integration loading and defensive Leaflet resize handling
 └── README.md                # Project overview
 ```
 
