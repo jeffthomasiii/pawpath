@@ -1,12 +1,24 @@
-/* Load the saved-plan summary after the core care-plan module is available. */
+/* Load late integration modules after the core care-plan module is available. */
 
 const planSummaryStylesheet = document.createElement("link");
 planSummaryStylesheet.rel = "stylesheet";
 planSummaryStylesheet.href = "plan-summary.css";
 document.head.append(planSummaryStylesheet);
 
+const mobileAppStylesheet = document.createElement("link");
+mobileAppStylesheet.rel = "stylesheet";
+mobileAppStylesheet.href = "mobile-app.css";
+document.head.append(mobileAppStylesheet);
+
 const planSummaryScript = document.createElement("script");
 planSummaryScript.src = "plan-summary.js";
+planSummaryScript.async = false;
+planSummaryScript.addEventListener("load", () => {
+  const mobileAppScript = document.createElement("script");
+  mobileAppScript.src = "mobile-app.js";
+  mobileAppScript.async = false;
+  document.head.append(mobileAppScript);
+});
 document.head.append(planSummaryScript);
 
 /* Keep Leaflet synchronized with responsive layout changes. */
