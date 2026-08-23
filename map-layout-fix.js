@@ -10,6 +10,11 @@ mobileAppStylesheet.rel = "stylesheet";
 mobileAppStylesheet.href = "mobile-app.css";
 document.head.append(mobileAppStylesheet);
 
+const mobilePlanStylesheet = document.createElement("link");
+mobilePlanStylesheet.rel = "stylesheet";
+mobilePlanStylesheet.href = "mobile-plan.css";
+document.head.append(mobilePlanStylesheet);
+
 const planSummaryScript = document.createElement("script");
 planSummaryScript.src = "plan-summary.js";
 planSummaryScript.async = false;
@@ -21,6 +26,12 @@ planSummaryScript.addEventListener("load", () => {
     const mobileAppSyncScript = document.createElement("script");
     mobileAppSyncScript.src = "mobile-app-sync.js";
     mobileAppSyncScript.async = false;
+    mobileAppSyncScript.addEventListener("load", () => {
+      const mobilePlanScript = document.createElement("script");
+      mobilePlanScript.src = "mobile-plan.js";
+      mobilePlanScript.async = false;
+      document.head.append(mobilePlanScript);
+    });
     document.head.append(mobileAppSyncScript);
   });
   document.head.append(mobileAppScript);
