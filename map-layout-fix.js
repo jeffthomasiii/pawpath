@@ -17,6 +17,12 @@ planSummaryScript.addEventListener("load", () => {
   const mobileAppScript = document.createElement("script");
   mobileAppScript.src = "mobile-app.js";
   mobileAppScript.async = false;
+  mobileAppScript.addEventListener("load", () => {
+    const mobileAppSyncScript = document.createElement("script");
+    mobileAppSyncScript.src = "mobile-app-sync.js";
+    mobileAppSyncScript.async = false;
+    document.head.append(mobileAppSyncScript);
+  });
   document.head.append(mobileAppScript);
 });
 document.head.append(planSummaryScript);
