@@ -15,6 +15,11 @@ mobilePlanStylesheet.rel = "stylesheet";
 mobilePlanStylesheet.href = "mobile-plan.css";
 document.head.append(mobilePlanStylesheet);
 
+const mobilePolishStylesheet = document.createElement("link");
+mobilePolishStylesheet.rel = "stylesheet";
+mobilePolishStylesheet.href = "mobile-polish.css";
+document.head.append(mobilePolishStylesheet);
+
 const planSummaryScript = document.createElement("script");
 planSummaryScript.src = "plan-summary.js";
 planSummaryScript.async = false;
@@ -30,6 +35,12 @@ planSummaryScript.addEventListener("load", () => {
       const mobilePlanScript = document.createElement("script");
       mobilePlanScript.src = "mobile-plan.js";
       mobilePlanScript.async = false;
+      mobilePlanScript.addEventListener("load", () => {
+        const mobilePolishScript = document.createElement("script");
+        mobilePolishScript.src = "mobile-polish.js";
+        mobilePolishScript.async = false;
+        document.head.append(mobilePolishScript);
+      });
       document.head.append(mobilePlanScript);
     });
     document.head.append(mobileAppSyncScript);
