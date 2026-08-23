@@ -1,0 +1,61 @@
+/* Stable mobile discovery layout: reserve real space for Results / Map controls instead of overlaying them. */
+
+@media (max-width: 700px) {
+  .discovery-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+    overflow: hidden;
+  }
+
+  .mobile-discovery-switcher {
+    position: relative;
+    z-index: 8;
+    top: auto;
+    left: auto;
+    grid-column: 1;
+    grid-row: 1;
+    width: min(244px, calc(100% - 28px));
+    margin: 10px auto 8px;
+    transform: none;
+  }
+
+  .results-panel,
+  .map-panel {
+    position: relative;
+    inset: auto;
+    grid-column: 1;
+    grid-row: 2;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+  }
+
+  .results-panel {
+    padding: 8px 14px 20px;
+    scroll-padding-top: 0;
+  }
+
+  .results-heading {
+    scroll-margin-top: 0;
+  }
+
+  .filter-row {
+    top: 0;
+    margin-top: 0;
+    padding: 8px 0 10px;
+  }
+
+  .filter-row > * {
+    flex-shrink: 0;
+  }
+
+  body[data-mobile-discovery="results"] .map-panel,
+  body[data-mobile-discovery="map"] .results-panel {
+    display: none;
+  }
+
+  body[data-mobile-discovery="map"] .map-panel {
+    display: block;
+  }
+}
