@@ -1,0 +1,77 @@
+/* Deployed-device mobile refinements for the guided planner and discovery controls. */
+
+@media (max-width: 700px) {
+  .mobile-plan-stepper {
+    padding: 12px 12px 9px;
+  }
+
+  .mobile-plan-progress-row {
+    grid-template-columns: 1fr minmax(92px, 32%);
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .mobile-plan-steps {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .mobile-plan-step-button {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 5px;
+    min-width: 0;
+    min-height: 66px;
+    padding: 7px 5px;
+    text-align: center;
+  }
+
+  .mobile-plan-step-number {
+    width: 27px;
+    height: 27px;
+    border-radius: 9px;
+    font-size: 0.7rem;
+  }
+
+  .mobile-plan-step-copy {
+    width: 100%;
+  }
+
+  .mobile-plan-step-copy strong {
+    font-size: 0.7rem;
+    line-height: 1.15;
+  }
+
+  .mobile-plan-step-copy small {
+    display: none;
+  }
+
+  body[data-mobile-view="plan"][data-mobile-plan-step="care"] .discovery-layout {
+    height: calc(100dvh - var(--mobile-header-height) - var(--mobile-nav-height) - 206px);
+    min-height: 440px;
+  }
+
+  .mobile-discovery-switcher {
+    top: 12px;
+  }
+
+  .results-panel {
+    padding-top: 74px;
+    scroll-padding-top: 74px;
+  }
+
+  .results-heading {
+    scroll-margin-top: 74px;
+  }
+
+  .filter-row {
+    top: 0;
+    margin-top: 2px;
+    padding: 10px 0 9px;
+  }
+
+  .filter-chip {
+    min-height: 42px;
+  }
+}
