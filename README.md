@@ -10,7 +10,7 @@ PawPath is a mobile-friendly web application for campers, RV travelers, road-tri
 
 [Open PawPath](https://jeffthomasiii.github.io/pawpath/)
 
-The proof of concept now presents two functionally distinct workflows. **Plan a Trip** lets users enter trip details, choose Primary and Backup facilities, and save one active care plan locally in the browser. **Find Care Now** hides the planning form and focuses on immediate nearby-care search. A saved plan can also open **Emergency Mode**, which removes unrelated planning and map controls, presents the saved Primary facility first with immediate Call and Directions actions, keeps the Backup directly below, and shows saved pet and owner details with call-ahead guidance. When the normal nearby search contains no emergency or urgent-care option, PawPath also checks a 30-mile fallback radius and either adds the nearest qualifying listing or clearly explains that OpenStreetMap could not identify one.
+The proof of concept now presents two functionally distinct workflows. **Plan a Trip** lets users enter trip details, choose Primary and Backup facilities, and save one active care plan locally in the browser. At phone widths, Plan now uses a three-stage guided workflow — **Trip & pet → Choose care → Review & save** — so the editor, selections, results, and map are not exposed as one long continuous page. **Find Care Now** hides the planning form and focuses on immediate nearby-care search. A saved plan can also open **Emergency Mode**, which removes unrelated planning and map controls, presents the saved Primary facility first with immediate Call and Directions actions, keeps the Backup directly below, and shows saved pet and owner details with call-ahead guidance. When the normal nearby search contains no emergency or urgent-care option, PawPath also checks a 30-mile fallback radius and either adds the nearest qualifying listing or clearly explains that OpenStreetMap could not identify one.
 
 ## Why PawPath?
 
@@ -37,7 +37,7 @@ PawPath is organized around two core experiences:
 
 ### Plan a Trip
 
-Search around a campground, destination, ZIP code, or overnight stop; enter trip and pet details; choose a Primary facility and Backup; and save the essential information before leaving.
+Search around a campground, destination, ZIP code, or overnight stop; enter trip and pet details; choose a Primary facility and Backup; and save the essential information before leaving. On mobile, the workflow is progressive: complete trip details, choose care, then review and save.
 
 ### Find Care Now
 
@@ -50,6 +50,11 @@ Open the saved care plan as a focused call-and-go view. The Primary facility app
 ## Current capabilities
 
 - Switch between Plan a Trip and Find Care Now modes
+- Use a phone-only app shell with compact header and persistent Plan / Care Now / Saved navigation
+- Use a guided three-stage mobile Plan workflow with one active stage at a time
+- Collapse completed mobile Plan stages into concise summaries without discarding entered data
+- Reveal Results / Map only during the mobile Choose care stage
+- Review trip and Primary / Backup choices before mobile save/update
 - Show a trip-plan editor only in Plan a Trip mode
 - Save one active care plan to browser `localStorage` using `pawpath.activeCarePlan.v1`
 - Store a trip name, destination, optional dates, pet name, owner phone, and one brief important note
@@ -82,7 +87,7 @@ Open the saved care plan as a focused call-and-go view. The Primary facility app
 - Filter results between all care, emergency, and routine clinics
 - Open driving directions without embedding a paid map service
 - Responsive desktop, tablet, and mobile layouts
-- Keyboard-accessible mode controls, search controls, cards, selections, forms, detail drawer, saved-plan actions, Emergency Mode, and map markers
+- Keyboard-accessible mode controls, mobile planning steps, search controls, cards, selections, forms, detail drawer, saved-plan actions, Emergency Mode, and map markers
 - PawPath branded header and favicon
 
 ## Next proof-of-concept capabilities
@@ -111,6 +116,7 @@ The next implementation task is [POC-07: Add curated demonstration data](https:/
 - [Phase 1 Backlog](docs/BACKLOG.md) — prioritized POC work packages
 - [Phase 1 Release Plan](docs/PHASE_1_RELEASE_PLAN.md) — increments, release gate, and manual checklist
 - [Implementation Notes](docs/IMPLEMENTATION_NOTES.md) — data objects, state model, storage, confidence logic, and file guidance
+- [Mobile Web App](docs/MOBILE_WEB_APP.md) — mobile application-shell direction and constraints
 - [Demo Script](docs/DEMO_SCRIPT.md) — two-minute walkthrough and early-user feedback questions
 
 ## Technologies
@@ -140,13 +146,18 @@ pawpath/
 ├── emergency-fallback.css   # Extended emergency-result presentation
 ├── brand-refresh.css        # Approved PawPath visual alignment layer
 ├── plan-summary.css         # Saved-plan summary and focused Emergency Mode presentation
+├── mobile-app.css           # Phone-only application shell and task views
+├── mobile-plan.css          # Guided mobile Plan stages and review surface
 ├── leaflet-local.css        # Locally hosted Leaflet layout styles
 ├── app.js                   # Modes, map, facility classification, detail rendering, search, filters, and UI state
 ├── emergency-fallback.js    # Conditional 30-mile emergency and urgent-care fallback search
 ├── selection.js             # Primary and Backup care-plan selection
 ├── care-plan.js             # Versioned local storage, validation, restore, update, and clear behavior
 ├── plan-summary.js          # Persistent saved-plan summary and Emergency Mode behavior
-├── map-layout-fix.js        # Saved-plan integration loading and defensive Leaflet resize handling
+├── mobile-app.js            # Phone app shell, bottom navigation, Saved, and Results / Map task views
+├── mobile-app-sync.js       # Keeps mobile saved-plan state synchronized with persistence
+├── mobile-plan.js           # Guided mobile Plan state, progress, summaries, and review behavior
+├── map-layout-fix.js        # Late integration loading and defensive Leaflet resize handling
 └── README.md                # Project overview
 ```
 
