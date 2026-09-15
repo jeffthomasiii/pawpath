@@ -2,7 +2,8 @@
  * Reorganizes the desktop experience into a compact application journey without changing JS contracts.
  */
 
-.desktop-plan-journey { display: none; }
+.desktop-plan-journey,
+.desktop-plan-journey[hidden] { display: none; }
 
 @media (min-width: 701px) {
   body { background: #f8f6ef; }
@@ -30,19 +31,15 @@
   .hero-copy h1 { max-width: 620px; margin: 8px 0 16px; font-size: clamp(3.2rem, 5.5vw, 5.7rem); line-height: 0.9; }
   .hero-copy > p:last-child { max-width: 570px; margin: 0; }
 
-  .mode-selector {
-    grid-area: mode; align-self: end; display: grid; grid-template-columns: 1fr 1fr;
-    gap: 6px; padding: 6px; border-radius: 18px;
-  }
+  .mode-selector { grid-area: mode; align-self: end; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 6px; border-radius: 18px; }
   .mode-option { min-height: 68px; padding: 10px 12px; }
   .mode-option small { margin-top: 2px; font-size: 0.66rem; }
-
   .search-card { grid-area: search; align-self: start; margin-top: 10px; padding: 18px; border-radius: 18px; }
   .search-card > label { font-family: Georgia, "Times New Roman", serif; color: var(--forest-950); font-size: 1.08rem; }
   .search-row { grid-template-columns: minmax(180px, 1fr) auto auto; }
   .mode-guidance { margin-top: 8px; }
 
-  .desktop-plan-journey {
+  .desktop-plan-journey:not([hidden]) {
     grid-area: journey;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -53,34 +50,9 @@
     background: rgba(255, 254, 250, 0.9);
     box-shadow: 0 8px 24px rgba(18, 58, 45, 0.06);
   }
-  .desktop-plan-journey button {
-    display: grid;
-    grid-template-columns: 38px minmax(0, 1fr);
-    grid-template-rows: auto auto;
-    column-gap: 10px;
-    align-items: center;
-    padding: 10px 12px;
-    border: 0;
-    border-radius: 14px;
-    background: transparent;
-    color: var(--forest-950);
-    font: inherit;
-    text-align: left;
-    cursor: pointer;
-  }
-  .desktop-plan-journey button:hover,
-  .desktop-plan-journey button:focus-visible { background: var(--sage-50); outline: none; }
-  .desktop-plan-journey span {
-    grid-row: 1 / 3;
-    display: grid;
-    width: 36px; height: 36px;
-    place-items: center;
-    border-radius: 12px;
-    background: var(--forest-900);
-    color: #fff;
-    font-size: 0.76rem;
-    font-weight: 900;
-  }
+  .desktop-plan-journey button { display: grid; grid-template-columns: 38px minmax(0, 1fr); grid-template-rows: auto auto; column-gap: 10px; align-items: center; padding: 10px 12px; border: 0; border-radius: 14px; background: transparent; color: var(--forest-950); font: inherit; text-align: left; cursor: pointer; }
+  .desktop-plan-journey button:hover, .desktop-plan-journey button:focus-visible { background: var(--sage-50); outline: none; }
+  .desktop-plan-journey span { grid-row: 1 / 3; display: grid; width: 36px; height: 36px; place-items: center; border-radius: 12px; background: var(--forest-900); color: #fff; font-size: 0.76rem; font-weight: 900; }
   .desktop-plan-journey strong { font-size: 0.82rem; }
   .desktop-plan-journey small { color: var(--ink-500); font-size: 0.68rem; }
 
@@ -96,7 +68,6 @@
   .care-plan-field textarea { min-height: 76px; }
   .care-plan-privacy-note { margin: 14px 0 0; padding: 10px 12px; }
   .care-plan-actions { margin-top: 12px; }
-
   .care-plan-selection { display: flex; flex-direction: column; }
   .care-plan-selection-heading h2 { font-size: 1.8rem; }
   .selection-slots { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: auto; }
@@ -104,15 +75,7 @@
   .selection-slot h3 { margin: 9px 0 5px; font-size: 1rem; }
   .selection-slot p { font-size: 0.78rem; }
 
-  .discovery-layout {
-    grid-area: discovery;
-    display: grid;
-    grid-template-columns: minmax(310px, 0.38fr) minmax(0, 0.62fr);
-    min-height: 590px;
-    height: min(68vh, 720px);
-    margin: 0;
-    scroll-margin-top: 18px;
-  }
+  .discovery-layout { grid-area: discovery; display: grid; grid-template-columns: minmax(310px, 0.38fr) minmax(0, 0.62fr); min-height: 590px; height: min(68vh, 720px); margin: 0; scroll-margin-top: 18px; }
   .results-panel { border-right: 1px solid rgba(18, 58, 45, 0.12); }
   .results-heading { padding-bottom: 12px; }
   .results-heading h2 { max-width: 300px; margin-top: 4px; font-size: clamp(1.75rem, 2.3vw, 2.45rem); line-height: 1.04; }
@@ -130,10 +93,7 @@
 }
 
 @media (max-width: 700px) {
-  .hero-copy h1, .care-plan-editor-heading h2, .care-plan-selection-heading h2,
-  .mobile-plan-review-heading h2, .saved-plan-summary h2, .results-heading h2 {
-    font-family: Georgia, "Times New Roman", serif;
-  }
+  .hero-copy h1, .care-plan-editor-heading h2, .care-plan-selection-heading h2, .mobile-plan-review-heading h2, .saved-plan-summary h2, .results-heading h2 { font-family: Georgia, "Times New Roman", serif; }
   .mobile-plan-stepper { background: linear-gradient(180deg, #f5f1e7, #fffefa); }
   .mobile-plan-step-button.is-active { border-color: rgba(18, 58, 45, 0.16); box-shadow: 0 7px 18px rgba(18, 58, 45, 0.07); }
   .care-plan-editor, .care-plan-selection, .saved-plan-summary, .mobile-plan-review { border-color: rgba(18, 58, 45, 0.1); }
