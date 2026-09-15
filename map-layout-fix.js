@@ -25,6 +25,13 @@ mobileDiscoveryLayoutStylesheet.rel = "stylesheet";
 mobileDiscoveryLayoutStylesheet.href = "mobile-discovery-layout.css";
 document.head.append(mobileDiscoveryLayoutStylesheet);
 
+/* Keep the approved visual system last so it can unify desktop and mobile
+ * without disturbing the existing module/load order or application state. */
+const adventureBrandStylesheet = document.createElement("link");
+adventureBrandStylesheet.rel = "stylesheet";
+adventureBrandStylesheet.href = "adventure-brand.css";
+document.head.append(adventureBrandStylesheet);
+
 const planSummaryScript = document.createElement("script");
 planSummaryScript.src = "plan-summary.js";
 planSummaryScript.async = false;
