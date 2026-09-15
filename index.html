@@ -3,13 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="Plan veterinary and emergency pet-care options before a trip, or find nearby care when you need it."
-    />
+    <meta name="description" content="Plan veterinary and emergency pet-care options before a trip, or find nearby care when you need it." />
     <meta name="theme-color" content="#173f35" />
     <title>PawPath | Pet-care preparedness for the road</title>
-
     <link rel="icon" href="assets/PawPath_mark_transparent.png" type="image/png" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="preconnect" href="https://tile.openstreetmap.org" />
@@ -23,294 +19,46 @@
     <link rel="stylesheet" href="adventure-brand.css?v=20260915-1" />
     <link rel="stylesheet" href="structural-brand.css?v=20260915-1" />
   </head>
-
   <body>
     <a class="skip-link" href="#main-content">Skip to main content</a>
-
     <header class="site-header">
-      <a class="brand" href="./" aria-label="PawPath home">
-        <img class="brand-logo" src="assets/PawPath_logo_Transparent.png" alt="PawPath" />
-        <span class="brand-tagline">Pet-care preparedness for the road</span>
-      </a>
-      <div class="site-header-actions" aria-label="Site navigation">
-        <a class="header-link" href="docs/?v=20260716-1">Documentation</a>
-        <span class="status-badge">Free map access</span>
-      </div>
+      <a class="brand" href="./" aria-label="PawPath home"><img class="brand-logo" src="assets/PawPath_logo_Transparent.png" alt="PawPath" /><span class="brand-tagline">Pet-care preparedness for the road</span></a>
+      <div class="site-header-actions" aria-label="Site navigation"><a class="header-link" href="docs/?v=20260716-1">Documentation</a><span class="status-badge">Free map access</span></div>
     </header>
-
     <main id="main-content" class="app-shell">
       <section id="hero-panel" class="hero-panel" data-mode="plan" aria-labelledby="page-title">
         <div class="mode-selector" role="group" aria-label="Choose how you want to use PawPath">
-          <button class="mode-option is-active" type="button" data-mode="plan" aria-pressed="true">
-            <span class="mode-option-icon" aria-hidden="true">⌖</span>
-            <span>
-              <strong>Plan a Trip</strong>
-              <small>Prepare care options before you leave.</small>
-            </span>
-          </button>
-          <button class="mode-option" type="button" data-mode="now" aria-pressed="false">
-            <span class="mode-option-icon" aria-hidden="true">✚</span>
-            <span>
-              <strong>Find Care Now</strong>
-              <small>Quickly search around your current location.</small>
-            </span>
-          </button>
+          <button class="mode-option is-active" type="button" data-mode="plan" aria-pressed="true"><span class="mode-option-icon" aria-hidden="true">⌖</span><span><strong>Plan a Trip</strong><small>Prepare care options before you leave.</small></span></button>
+          <button class="mode-option" type="button" data-mode="now" aria-pressed="false"><span class="mode-option-icon" aria-hidden="true">✚</span><span><strong>Find Care Now</strong><small>Quickly search around your current location.</small></span></button>
         </div>
-
-        <div class="hero-copy">
-          <p id="hero-eyebrow" class="eyebrow">Pet-care preparedness for the road</p>
-          <h1 id="page-title">Make a pet-care plan before you travel.</h1>
-          <p id="hero-description">
-            Search a campground, destination, city, or ZIP code. Review nearby veterinary care now so you know
-            where to call and where to go before your trip begins.
-          </p>
-        </div>
-
+        <div class="hero-copy"><p id="hero-eyebrow" class="eyebrow">Pet-care preparedness for the road</p><h1 id="page-title">Make a pet-care plan before you travel.</h1><p id="hero-description">Search a campground, destination, city, or ZIP code. Review nearby veterinary care now so you know where to call and where to go before your trip begins.</p></div>
         <form id="search-form" class="search-card" novalidate>
           <label id="location-label" for="location-input">Where are you going?</label>
-          <div class="search-row">
-            <div class="input-wrap">
-              <span aria-hidden="true">⌕</span>
-              <input
-                id="location-input"
-                name="location"
-                type="search"
-                autocomplete="postal-code"
-                placeholder="Campground, city, state, or ZIP code"
-              />
-            </div>
-            <button class="button button-primary" type="submit" id="search-btn">
-              <span id="search-button-label">Explore destination</span>
-            </button>
-            <button class="button button-secondary" type="button" id="loc-btn">
-              <span aria-hidden="true">◎</span>
-              <span id="location-button-label">Use my location</span>
-            </button>
-          </div>
-          <p id="mode-guidance" class="mode-guidance">
-            Start with where you will stay. PawPath will show care options near that destination.
-          </p>
-          <p id="form-message" class="form-message" role="status" aria-live="polite"></p>
-        </form>
-        <p id="mode-status" class="sr-only" aria-live="polite"></p>
+          <div class="search-row"><div class="input-wrap"><span aria-hidden="true">⌕</span><input id="location-input" name="location" type="search" autocomplete="postal-code" placeholder="Campground, city, state, or ZIP code" /></div><button class="button button-primary" type="submit" id="search-btn"><span id="search-button-label">Explore destination</span></button><button class="button button-secondary" type="button" id="loc-btn"><span aria-hidden="true">◎</span><span id="location-button-label">Use my location</span></button></div>
+          <p id="mode-guidance" class="mode-guidance">Start with where you will stay. PawPath will show care options near that destination.</p><p id="form-message" class="form-message" role="status" aria-live="polite"></p>
+        </form><p id="mode-status" class="sr-only" aria-live="polite"></p>
       </section>
-
       <section id="care-plan-editor" class="care-plan-editor" aria-labelledby="care-plan-editor-title">
-        <div class="care-plan-editor-heading">
-          <div>
-            <p class="eyebrow">Step 1 · Trip details</p>
-            <h2 id="care-plan-editor-title">Save the essentials for this trip.</h2>
-          </div>
-          <div>
-            <span id="care-plan-saved-state" class="care-plan-saved-state">Not saved yet</span>
-            <p>One active plan is stored only in this browser. No account or backend is required.</p>
-          </div>
-        </div>
-
-        <form id="care-plan-form" class="care-plan-form" novalidate>
-          <div class="care-plan-fields">
-            <div class="care-plan-field">
-              <label for="trip-name">Trip name <span aria-hidden="true">*</span></label>
-              <input id="trip-name" name="tripName" type="text" maxlength="80" autocomplete="off" placeholder="Big Bear camping trip" required />
-            </div>
-
-            <div class="care-plan-field">
-              <label for="trip-destination">Destination <span aria-hidden="true">*</span></label>
-              <input id="trip-destination" name="tripDestination" type="text" maxlength="140" autocomplete="off" required />
-            </div>
-
-            <div class="care-plan-field">
-              <label for="trip-start-date">Start date <span class="sr-only">optional</span></label>
-              <input id="trip-start-date" name="tripStartDate" type="date" />
-            </div>
-
-            <div class="care-plan-field">
-              <label for="trip-end-date">End date <span class="sr-only">optional</span></label>
-              <input id="trip-end-date" name="tripEndDate" type="date" />
-            </div>
-
-            <div class="care-plan-field">
-              <label for="pet-name">Pet name <span class="sr-only">optional</span></label>
-              <input id="pet-name" name="petName" type="text" maxlength="60" autocomplete="off" placeholder="Olive" />
-            </div>
-
-            <div class="care-plan-field">
-              <label for="owner-phone">Owner phone <span class="sr-only">optional</span></label>
-              <input id="owner-phone" name="ownerPhone" type="tel" maxlength="40" autocomplete="tel" placeholder="(555) 555-0123" />
-            </div>
-
-            <div class="care-plan-field is-wide">
-              <label for="pet-note">Important pet note <span class="sr-only">optional</span></label>
-              <textarea id="pet-note" name="petNote" maxlength="240" placeholder="Allergies, medications, temperament, or another short detail that may help during travel."></textarea>
-              <small>Keep this brief. Do not store medical records, identification documents, or other sensitive files in this proof of concept.</small>
-            </div>
-          </div>
-
-          <p class="care-plan-privacy-note">
-            <strong>Stored on this device:</strong> PawPath saves one care plan in this browser using local storage. Clearing browser data will remove it.
-          </p>
-
-          <div class="care-plan-actions">
-            <button id="save-care-plan" class="button button-primary" type="submit">Save care plan</button>
-            <button id="clear-care-plan" class="button button-secondary" type="button" hidden>Clear plan</button>
-          </div>
-          <p id="care-plan-status" class="care-plan-status" role="status" aria-live="polite"></p>
-        </form>
+        <div class="care-plan-editor-heading"><div><p class="eyebrow">Step 1 · Trip details</p><h2 id="care-plan-editor-title">Save the essentials for this trip.</h2></div><div><span id="care-plan-saved-state" class="care-plan-saved-state">Not saved yet</span><p>One active plan is stored only in this browser. No account or backend is required.</p></div></div>
+        <form id="care-plan-form" class="care-plan-form" novalidate><div class="care-plan-fields">
+          <div class="care-plan-field"><label for="trip-name">Trip name <span aria-hidden="true">*</span></label><input id="trip-name" name="tripName" type="text" maxlength="80" autocomplete="off" placeholder="Big Bear camping trip" required /></div>
+          <div class="care-plan-field"><label for="trip-destination">Destination <span aria-hidden="true">*</span></label><input id="trip-destination" name="tripDestination" type="text" maxlength="140" autocomplete="off" required /></div>
+          <div class="care-plan-field"><label for="trip-start-date">Start date <span class="sr-only">optional</span></label><input id="trip-start-date" name="tripStartDate" type="date" /></div>
+          <div class="care-plan-field"><label for="trip-end-date">End date <span class="sr-only">optional</span></label><input id="trip-end-date" name="tripEndDate" type="date" /></div>
+          <div class="care-plan-field"><label for="pet-name">Pet name <span class="sr-only">optional</span></label><input id="pet-name" name="petName" type="text" maxlength="60" autocomplete="off" placeholder="Olive" /></div>
+          <div class="care-plan-field"><label for="owner-phone">Owner phone <span class="sr-only">optional</span></label><input id="owner-phone" name="ownerPhone" type="tel" maxlength="40" autocomplete="tel" placeholder="(555) 555-0123" /></div>
+          <div class="care-plan-field is-wide"><label for="pet-note">Important pet note <span class="sr-only">optional</span></label><textarea id="pet-note" name="petNote" maxlength="240" placeholder="Allergies, medications, temperament, or another short detail that may help during travel."></textarea><small>Keep this brief. Do not store medical records, identification documents, or other sensitive files in this proof of concept.</small></div>
+        </div><p class="care-plan-privacy-note"><strong>Stored on this device:</strong> PawPath saves one care plan in this browser using local storage. Clearing browser data will remove it.</p><div class="care-plan-actions"><button id="save-care-plan" class="button button-primary" type="submit">Save care plan</button><button id="clear-care-plan" class="button button-secondary" type="button" hidden>Clear plan</button></div><p id="care-plan-status" class="care-plan-status" role="status" aria-live="polite"></p></form>
       </section>
-
       <section id="care-plan-selection" class="care-plan-selection" aria-labelledby="care-plan-selection-title">
-        <div class="care-plan-selection-heading">
-          <div>
-            <p class="eyebrow">Step 2 · Care choices</p>
-            <h2 id="care-plan-selection-title">Choose a primary and backup.</h2>
-          </div>
-          <p>Pick a likely emergency or urgent-care option, then a distinct backup in case your first choice is unavailable.</p>
-        </div>
-
-        <div class="selection-slots">
-          <article id="primary-selection-slot" class="selection-slot" aria-labelledby="primary-selection-label">
-            <span id="primary-selection-label" class="selection-role-label is-primary">Primary</span>
-            <h3 id="primary-selection-name">No primary selected</h3>
-            <p id="primary-selection-meta">Choose a likely emergency or urgent-care facility from the map results.</p>
-            <div class="selection-slot-actions">
-              <button id="primary-selection-view" class="text-button" type="button" hidden>View details</button>
-              <button id="primary-selection-remove" class="text-button is-destructive" type="button" hidden>Remove</button>
-            </div>
-          </article>
-
-          <article id="backup-selection-slot" class="selection-slot" aria-labelledby="backup-selection-label">
-            <span id="backup-selection-label" class="selection-role-label is-backup">Backup</span>
-            <h3 id="backup-selection-name">No backup selected</h3>
-            <p id="backup-selection-meta">Choose a distinct backup facility in case the primary option is unavailable.</p>
-            <div class="selection-slot-actions">
-              <button id="backup-selection-view" class="text-button" type="button" hidden>View details</button>
-              <button id="backup-selection-remove" class="text-button is-destructive" type="button" hidden>Remove</button>
-            </div>
-          </article>
-        </div>
-        <p id="selection-status" class="sr-only" aria-live="polite"></p>
+        <div class="care-plan-selection-heading"><div><p class="eyebrow">Step 2 · Care choices</p><h2 id="care-plan-selection-title">Choose a primary and backup.</h2></div><p>Pick a likely emergency or urgent-care option, then a distinct backup in case your first choice is unavailable.</p></div>
+        <div class="selection-slots"><article id="primary-selection-slot" class="selection-slot" aria-labelledby="primary-selection-label"><span id="primary-selection-label" class="selection-role-label is-primary">Primary</span><h3 id="primary-selection-name">No primary selected</h3><p id="primary-selection-meta">Choose a likely emergency or urgent-care facility from the map results.</p><div class="selection-slot-actions"><button id="primary-selection-view" class="text-button" type="button" hidden>View details</button><button id="primary-selection-remove" class="text-button is-destructive" type="button" hidden>Remove</button></div></article><article id="backup-selection-slot" class="selection-slot" aria-labelledby="backup-selection-label"><span id="backup-selection-label" class="selection-role-label is-backup">Backup</span><h3 id="backup-selection-name">No backup selected</h3><p id="backup-selection-meta">Choose a distinct backup facility in case the primary option is unavailable.</p><div class="selection-slot-actions"><button id="backup-selection-view" class="text-button" type="button" hidden>View details</button><button id="backup-selection-remove" class="text-button is-destructive" type="button" hidden>Remove</button></div></article></div><p id="selection-status" class="sr-only" aria-live="polite"></p>
       </section>
-
-      <section class="discovery-layout" aria-label="Veterinary clinic finder">
-        <aside class="results-panel" aria-labelledby="results-title">
-          <div class="results-heading">
-            <div>
-              <p id="results-eyebrow" class="eyebrow">Step 3 · Explore nearby care</p>
-              <h2 id="results-title">Care options near Moreno Valley, California</h2>
-            </div>
-            <span id="result-count" class="result-count">Loading…</span>
-          </div>
-
-          <div class="filter-row" aria-label="Clinic filters">
-            <button class="filter-chip is-active" type="button" data-filter="all" aria-pressed="true">All care</button>
-            <button class="filter-chip" type="button" data-filter="emergency" aria-pressed="false">Emergency</button>
-            <button class="filter-chip" type="button" data-filter="routine" aria-pressed="false">Routine</button>
-          </div>
-
-          <div id="clinic-list" class="clinic-list" aria-live="polite"></div>
-        </aside>
-
-        <section class="map-panel" aria-label="Map of veterinary clinics">
-          <div id="map" role="application" aria-label="Interactive map showing nearby veterinary clinics"></div>
-          <div class="map-note">
-            <strong>Map data:</strong> OpenStreetMap contributors. Clinic details may be incomplete; call ahead when possible.
-          </div>
-        </section>
-      </section>
+      <section class="discovery-layout" aria-label="Veterinary clinic finder"><aside class="results-panel" aria-labelledby="results-title"><div class="results-heading"><div><p id="results-eyebrow" class="eyebrow">Step 3 · Explore nearby care</p><h2 id="results-title">Care options near Moreno Valley, California</h2></div><span id="result-count" class="result-count">Loading…</span></div><div class="filter-row" aria-label="Clinic filters"><button class="filter-chip is-active" type="button" data-filter="all" aria-pressed="true">All care</button><button class="filter-chip" type="button" data-filter="emergency" aria-pressed="false">Emergency</button><button class="filter-chip" type="button" data-filter="routine" aria-pressed="false">Routine</button></div><div id="clinic-list" class="clinic-list" aria-live="polite"></div></aside><section class="map-panel" aria-label="Map of veterinary clinics"><div id="map" role="application" aria-label="Interactive map showing nearby veterinary clinics"></div><div class="map-note"><strong>Map data:</strong> OpenStreetMap contributors. Clinic details may be incomplete; call ahead when possible.</div></section></section>
     </main>
-
-    <dialog id="facility-detail" class="facility-detail" aria-labelledby="facility-detail-title">
-      <div class="facility-detail-shell">
-        <header class="facility-detail-header">
-          <div>
-            <p class="eyebrow">Facility details</p>
-            <h2 id="facility-detail-title">Veterinary facility</h2>
-          </div>
-          <button id="facility-detail-close" class="icon-button" type="button" aria-label="Close facility details">×</button>
-        </header>
-
-        <div class="facility-detail-badges" aria-label="Facility classification">
-          <span id="detail-care-type" class="detail-badge">Care type unknown</span>
-          <span id="detail-confidence" class="detail-badge detail-confidence">Needs confirmation</span>
-        </div>
-
-        <p id="detail-confidence-explanation" class="confidence-explanation"></p>
-
-        <section class="facility-plan-selection" aria-labelledby="facility-plan-selection-title">
-          <div>
-            <h3 id="facility-plan-selection-title">Add to your trip care plan</h3>
-            <p id="detail-role-status">This facility has not been added to the care plan yet.</p>
-          </div>
-          <div class="facility-plan-buttons">
-            <button id="select-primary" class="plan-role-button is-primary" type="button">Select as Primary</button>
-            <button id="select-backup" class="plan-role-button is-backup" type="button">Select as Backup</button>
-          </div>
-          <p id="detail-plan-message" class="detail-plan-message">
-            Primary and Backup must be different facilities. You can replace or remove either choice at any time.
-          </p>
-        </section>
-
-        <dl class="facility-facts">
-          <div>
-            <dt>Address</dt>
-            <dd id="detail-address">Not listed</dd>
-          </div>
-          <div>
-            <dt>Distance</dt>
-            <dd id="detail-distance">Not available</dd>
-          </div>
-          <div>
-            <dt>Phone</dt>
-            <dd id="detail-phone">Not listed</dd>
-          </div>
-          <div>
-            <dt>Hours</dt>
-            <dd id="detail-hours">Not listed</dd>
-          </div>
-          <div>
-            <dt>Website</dt>
-            <dd id="detail-website-value">Not listed</dd>
-          </div>
-          <div>
-            <dt>Data source</dt>
-            <dd id="detail-source">OpenStreetMap</dd>
-          </div>
-        </dl>
-
-        <section class="source-disclosure" aria-labelledby="source-disclosure-title">
-          <h3 id="source-disclosure-title">How to use this information</h3>
-          <p id="detail-source-notes"></p>
-          <p class="call-ahead-note">
-            <strong>Call ahead:</strong> PawPath does not guarantee that a facility is open, available, or able to treat a specific pet or condition.
-          </p>
-        </section>
-
-        <div class="facility-detail-actions">
-          <a id="detail-call" class="button button-primary" href="#">Call facility</a>
-          <a id="detail-directions" class="button detail-action-secondary" href="#" target="_blank" rel="noopener noreferrer">Directions ↗</a>
-          <a id="detail-website" class="button detail-action-secondary" href="#" target="_blank" rel="noopener noreferrer">Website ↗</a>
-        </div>
-      </div>
-    </dialog>
-
-    <footer class="site-footer">
-      <p>Built for campers, travelers, and the pets who come along.</p>
-      <p>© <span id="current-year"></span> PawPath</p>
-    </footer>
-
-    <template id="empty-state-template">
-      <div class="empty-state">
-        <span aria-hidden="true">🐕</span>
-        <h3>No clinics found in this area</h3>
-        <p>Try another city or ZIP code, or widen your search by moving the map.</p>
-      </div>
-    </template>
-
-    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
-    <script src="app.js" defer></script>
-    <script src="emergency-fallback.js" defer></script>
-    <script src="selection.js" defer></script>
-    <script src="care-plan.js" defer></script>
-    <script src="map-layout-fix.js" defer></script>
+    <dialog id="facility-detail" class="facility-detail" aria-labelledby="facility-detail-title"><div class="facility-detail-shell"><header class="facility-detail-header"><div><p class="eyebrow">Facility details</p><h2 id="facility-detail-title">Veterinary facility</h2></div><button id="facility-detail-close" class="icon-button" type="button" aria-label="Close facility details">×</button></header><div class="facility-detail-badges" aria-label="Facility classification"><span id="detail-care-type" class="detail-badge">Care type unknown</span><span id="detail-confidence" class="detail-badge detail-confidence">Needs confirmation</span></div><p id="detail-confidence-explanation" class="confidence-explanation"></p><section class="facility-plan-selection" aria-labelledby="facility-plan-selection-title"><div><h3 id="facility-plan-selection-title">Add to your trip care plan</h3><p id="detail-role-status">This facility has not been added to the care plan yet.</p></div><div class="facility-plan-buttons"><button id="select-primary" class="plan-role-button is-primary" type="button">Select as Primary</button><button id="select-backup" class="plan-role-button is-backup" type="button">Select as Backup</button></div><p id="detail-plan-message" class="detail-plan-message">Primary and Backup must be different facilities. You can replace or remove either choice at any time.</p></section><dl class="facility-facts"><div><dt>Address</dt><dd id="detail-address">Not listed</dd></div><div><dt>Distance</dt><dd id="detail-distance">Not available</dd></div><div><dt>Phone</dt><dd id="detail-phone">Not listed</dd></div><div><dt>Hours</dt><dd id="detail-hours">Not listed</dd></div><div><dt>Website</dt><dd id="detail-website-value">Not listed</dd></div><div><dt>Data source</dt><dd id="detail-source">OpenStreetMap</dd></div></dl><section class="source-disclosure" aria-labelledby="source-disclosure-title"><h3 id="source-disclosure-title">How to use this information</h3><p id="detail-source-notes"></p><p class="call-ahead-note"><strong>Call ahead:</strong> PawPath does not guarantee that a facility is open, available, or able to treat a specific pet or condition.</p></section><div class="facility-detail-actions"><a id="detail-call" class="button button-primary" href="#">Call facility</a><a id="detail-directions" class="button detail-action-secondary" href="#" target="_blank" rel="noopener noreferrer">Directions ↗</a><a id="detail-website" class="button detail-action-secondary" href="#" target="_blank" rel="noopener noreferrer">Website ↗</a></div></div></dialog>
+    <footer class="site-footer"><p>Built for campers, travelers, and the pets who come along.</p><p>© <span id="current-year"></span> PawPath</p></footer>
+    <template id="empty-state-template"><div class="empty-state"><span aria-hidden="true">🐕</span><h3>No clinics found in this area</h3><p>Try another city or ZIP code, or widen your search by moving the map.</p></div></template>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script><script src="app.js" defer></script><script src="emergency-fallback.js" defer></script><script src="selection.js" defer></script><script src="care-plan.js" defer></script><script src="map-layout-fix.js" defer></script><script src="brand-journey.js?v=20260915-1" defer></script>
   </body>
 </html>
