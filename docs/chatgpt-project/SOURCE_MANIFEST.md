@@ -1,97 +1,61 @@
 # PawPath ChatGPT Project Source Manifest
 
-## Recommended project name
+Last updated: September 16, 2026
+
+## Project
 
 **PawPath Product & Development**
 
-## Recommended project memory
+## Source-of-truth order
 
-Choose **Project-only memory** when creating the ChatGPT Project so PawPath work remains anchored to this project’s chats, instructions, and sources rather than unrelated conversations.
+For implementation questions, use this order:
 
-## Required sources
+1. Current `main` branch code
+2. Active GitHub issues and Phase 1 tracking issue
+3. `CURRENT_STATE.md`
+4. Product vision, POC scope, roadmap, implementation notes, and repository audit
+5. README
+6. Older chats or historical assumptions
 
-Add these first:
+## Required project sources
 
-1. `PROJECT_BRIEF.md`
-   - concise product definition, audience, workflows, success criteria, and safety boundaries
-2. `CURRENT_STATE.md`
-   - implementation handoff, current roadmap status, architecture, and known limitations
-3. `ENGINEERING_WORKFLOW.md`
-   - repository workflow, coding constraints, validation expectations, and merge process
-4. `../WHY_PAWPATH.md`
-   - complete product positioning and competitive distinction
-5. `../PRODUCT_VISION.md`
-   - mission, jobs to be done, principles, and product direction
-6. `../BRAND_GUIDE.md`
-   - approved brand positioning, voice, palette, UI shape strategy, accessibility expectations, and feature-decision guardrails
-7. `../POC_SCOPE.md`
-   - proof-of-concept requirements and release criteria
-8. `../ROADMAP.md`
-   - phased development plan
-9. `../IMPLEMENTATION_NOTES.md`
-   - state, storage, data, confidence, and architecture guidance
-10. `../PHASE_1_RELEASE_PLAN.md`
-   - increments and release gate
-11. `../../README.md`
-   - public repository overview and current capabilities
+1. `PROJECT_BRIEF.md` — concise product definition, audience, workflows, success criteria, and safety boundaries
+2. `CURRENT_STATE.md` — active runtime architecture, current capabilities, validation status, and immediate next step
+3. `ENGINEERING_WORKFLOW.md` — repository workflow, coding constraints, validation expectations, and merge process
+4. `../REPO_AUDIT_2026-09-16.md` — post-premium-redesign architecture/functionality reconciliation
+5. `../WHY_PAWPATH.md` — product positioning and competitive distinction
+6. `../PRODUCT_VISION.md` — mission, jobs to be done, principles, and product direction
+7. `../BRAND_GUIDE.md` — durable brand/voice/accessibility guidance; current UI may intentionally evolve beyond older visual examples
+8. `../POC_SCOPE.md` — proof-of-concept requirements and release criteria
+9. `../ROADMAP.md` — phased development plan and current Phase 1 sequence
+10. `../IMPLEMENTATION_NOTES.md` — historical/state/data architecture guidance; verify against current main before implementation
+11. `../PHASE_1_RELEASE_PLAN.md` — Phase 1 increments and release gate; verify status against current main/issues
+12. `../../README.md` — public repository overview and current active architecture
 
-## Brand use in ChatGPT
-
-For feature proposals, UX recommendations, mockups, documentation, and implementation planning, use `../BRAND_GUIDE.md` as the source for:
-
-- calm, practical, transparent voice
-- approved Pine / Sage / Mist / Stone / Amber / Ink / Danger palette
-- preservation of the established PawPath mark and wordmark
-- open layouts for orientation
-- selective cards for key decisions
-- list rows for scan-heavy results
-- modest rounding and minimal shadows
-- accessible, product-first emphasis
-
-Brand guidance does not override product safety, current `main` behavior, active issue acceptance criteria, or the immediate Phase 1 roadmap.
-
-## Optional sources
-
-Add these when useful:
-
-- `STARTER_PROMPTS.md`
-- `../DEMO_SCRIPT.md`
-- `../BACKLOG.md`
-- `../ISSUE_TEMPLATES.md`
-- selected screenshots of the current desktop and mobile interface
-- saved ChatGPT responses that capture important product decisions
-
-## GitHub as the live source of truth
-
-The uploaded Markdown files provide durable context, but current implementation questions should also use the connected GitHub repository because code and issues may change after the files were uploaded.
-
-Important live references:
+## Important live references
 
 - Repository: `jeffthomasiii/pawpath`
 - Phase 1 tracker: Issue #13
-- Current next issue: Issue #9, Full Emergency Mode
+- Repository/PWA reconciliation: Issue #75
+- Current next step after reconciliation: deployed smoke testing, then mobile screen-by-screen review
 
-## Keeping project sources current
+## Architecture caution
+
+The repository contains both the current premium multi-page PWA and older single-page implementation modules. File presence is not proof that a module is loaded. Inspect the current page entry points and script/style loading before describing or modifying active behavior.
+
+The canonical local-storage key remains `pawpath.activeCarePlan.v1`. Current premium pages should preserve the established nested `trip`, `traveler`, and `facilities` shape.
+
+## Keeping sources current
 
 After each significant merged increment:
 
-1. Update `CURRENT_STATE.md` in the repository.
-2. Update the README when public capabilities or the next task change.
-3. Replace the old uploaded `CURRENT_STATE.md` in the ChatGPT Project, or save the updated content as a new project source.
-4. Replace the uploaded `BRAND_GUIDE.md` when approved brand decisions change.
-5. Save important decision responses to the project sources when they establish lasting product direction.
-6. Avoid uploading every implementation chat; keep durable decisions and concise handoffs instead.
+1. Update `CURRENT_STATE.md`.
+2. Update README when public capabilities, architecture, limitations, or next task change.
+3. Update the repository audit when architecture/loading assumptions materially change.
+4. Update Roadmap/Next Step when the immediate sequence changes.
+5. Replace stale uploaded project copies of these documents when appropriate.
+6. Avoid treating old implementation notes or chats as more authoritative than current `main`.
 
-## Suggested project organization
+## Suggested chat organization
 
-Use separate chats for:
-
-- Product strategy and roadmap
-- Current feature implementation
-- Bugs and QA
-- UX and interface design
-- Data sources and trust
-- Documentation and release notes
-- Future architecture and production planning
-
-This keeps individual conversations focused while allowing the Project to retain shared files and context.
+Keep separate chats for product strategy/roadmap, feature implementation, bugs/QA, UX/interface design, data/trust, documentation/release notes, and future production architecture.
