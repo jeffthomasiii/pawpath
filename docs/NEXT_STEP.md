@@ -1,25 +1,26 @@
 # Next Implementation Step
 
-The next development task is **POC-01: Add Plan a Trip and Find Care Now modes**.
+Last updated: September 16, 2026
 
-This should be implemented before the care-plan builder because it establishes the product’s information architecture and makes the “why PawPath?” distinction visible in the interface.
+The next task is **deployed smoke testing of the reconciled premium PWA, followed by the mobile screen-by-screen review**.
 
-## Deliverable
+Do not add another visual layer or advance to curated demo data until the active multi-page flow has been exercised on the deployed GitHub Pages site.
 
-Add a prominent mode selector above the search experience:
+## Smoke-test path
 
-- **Plan a Trip** — search around a destination and prepare care options
-- **Find Care Now** — use the current location or nearby search for immediate care
+1. Open Home on desktop and phone widths.
+2. Open Plan a Trip, save trip/pet essentials, refresh, and confirm they restore.
+3. Continue to Care Now with the destination carried into search.
+4. Verify Nominatim search, browser geolocation permission handling, Overpass results, Leaflet markers, Call/Directions/source links, and call-ahead messaging.
+5. Choose an eligible Primary and a distinct Backup; refresh and confirm both persist.
+6. Open Saved Plan and verify trip/pet/facility details and actions.
+7. Open Emergency Mode and verify normal navigation is removed while Primary/Backup Call and Directions remain available.
+8. Clear the plan and confirm Home, Plan, and Saved return to their empty states.
+9. Verify installed-PWA/service-worker refresh behavior where practical.
+10. On iPhone Safari and Android Chrome, verify safe-area spacing, fixed bottom navigation, map stacking, hero crops, keyboard/focus behavior, and no clipped controls.
 
-## Required behavior
+## Reporting rule
 
-- The default mode should be Plan a Trip
-- The selected mode should update the headline, explanatory copy, input label, and primary action
-- Find Care Now should visually emphasize Use My Location
-- Existing search and map behavior must continue to work
-- The selected mode should be stored only in application state; no account or persistence is required
-- Both modes must be usable by keyboard and screen reader
+Record static review separately from deployed browser behavior. The repository has no automated browser-test suite, so browser-dependent behavior should not be described as confirmed until this smoke test has been completed.
 
-## Definition of done
-
-The first screen should make it clear, before any search is performed, that PawPath supports both preparation before travel and immediate access during an urgent need.
+After the smoke test, resume the planned mobile screen-by-screen review and address visual/interaction issues one screen at a time.
