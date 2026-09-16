@@ -2,14 +2,14 @@
   const BASE=document.querySelector('meta[name="pawpath-base"]')?.content||'./';
   const key='pawpath.activeCarePlan.v1';
   const now=()=>new Date().toISOString();
-  const id=()=>crypto?.randomUUID?.()||`care-plan-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+  const id=()=>globalThis.crypto?.randomUUID?.()||`care-plan-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const emptyPet=()=>({id:id(),name:'',species:'dog',medications:'',allergies:'',notes:''});
   const emptyPlan=()=>({schemaVersion:1,id:id(),createdAt:now(),updatedAt:now(),trip:{name:'',destination:'',startDate:'',endDate:''},traveler:{ownerPhone:'',pets:[emptyPet()]},facilities:{primary:null,backup:null,routine:null}});
   function normalize(raw){
     if(!raw||typeof raw!=='object')return null;
     const p=emptyPlan();p.id=raw.id||p.id;p.createdAt=raw.createdAt||p.createdAt;p.updatedAt=raw.updatedAt||p.updatedAt;
     p.trip=raw.trip?{name:raw.trip.name||'',destination:raw.trip.destination||'',startDate:raw.trip.startDate||'',endDate:raw.trip.endDate||''}:{name:raw.tripName||raw.name||'',destination:raw.tripDestination||raw.destination||'',startDate:raw.tripStartDate||raw.startDate||'',endDate:raw.tripEndDate||raw.endDate||''};
-    const tr=raw.traveler||{};let pets=Array.isArray(tr.pets)?tr.pets.slice(0,5).map(x=>({id:x.id||id(),name:x.name||'',species:x.species||'dog',medications:x.medications||'',allergies:x.allergies||'',notes:x.notes||''})):[];
+    const tr=raw.traveler||{};let pets=Array.isArray(tr.pets)?tr.pets.slice(0,6).map(x=>({id:x.id||id(),name:x.name||'',species:x.species||'dog',medications:x.medications||'',allergies:x.allergies||'',notes:x.notes||''})):[];
     const legacyName=tr.petName||raw.petName||'',legacyNote=tr.importantNote||raw.importantNote||raw.petNote||'';if(!pets.length&&(legacyName||legacyNote))pets=[{id:id(),name:legacyName,species:'dog',medications:'',allergies:'',notes:legacyNote}];if(!pets.length)pets=[emptyPet()];
     p.traveler={ownerPhone:tr.ownerPhone||raw.ownerPhone||'',pets};p.facilities=raw.facilities||{primary:raw.primaryFacility||raw.primary||null,backup:raw.backupFacility||raw.backup||null,routine:null};return p;
   }
