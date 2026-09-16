@@ -8,113 +8,76 @@ Last updated: September 16, 2026
 - Default branch: `main`
 - Live site: `https://jeffthomasiii.github.io/pawpath/`
 - Hosting: GitHub Pages
-- Current product shape: premium multi-page Progressive Web App proof of concept
+- Product shape: premium multi-page Progressive Web App proof of concept
 
 ## Active runtime architecture
 
-The live entry points are now separate pages rather than the older single-page application:
+Entry points are `/`, `/plan/`, `/care-now/`, `/saved/`, and `/resources/`.
 
-- `/` — Home/dashboard
-- `/plan/` — Plan a Trip
-- `/care-now/` — Find Care Now
-- `/saved/` — Saved Plan and Emergency Mode
-- `/resources/` — preparedness resources
+Shared premium runtime includes `premium-pages.css`, `premium-refinement.css`, `premium-decision-support.css`, `premium-shell.js`, `pwa-nav.js`, `premium-plan.js`, `premium-care.js`, `manifest.webmanifest`, and `sw.js`.
 
-Shared active files are `premium-pages.css`, `premium-refinement.css`, `premium-shell.js`, `pwa-nav.js`, `manifest.webmanifest`, and `sw.js`, plus page-local JavaScript.
-
-The older single-page modules (`app.js`, `selection.js`, `care-plan.js`, `plan-summary.js`, `emergency-fallback.js`, `mobile-app.js`, `mobile-app-sync.js`, `mobile-plan.js`, `map-layout-fix.js`, and companion styles) remain in the repository as historical/reference implementation. They are not loaded by the premium multi-page pages and must not be described as active simply because the files still exist.
-
-See `docs/REPO_AUDIT_2026-09-16.md` for the reconciliation audit.
+Older single-page modules remain in the repository as historical/reference implementations. The premium implementation reuses their product behavior where appropriate but does not load the old wrapper-heavy UI modules wholesale.
 
 ## Current implemented capabilities
 
 ### Plan a Trip
 
-- Enter a trip name and destination
-- Optionally save travel dates, pet name, owner phone, and one brief important note
-- Save one active plan in browser `localStorage`
-- Storage key remains `pawpath.activeCarePlan.v1`
-- Canonical v1 data is nested under `trip`, `traveler`, and `facilities`
-- Interim flat premium-PWA records are normalized when read
-- Preserve existing facility selections when trip details are edited
-- Carry the saved destination into Care Now
+- Premium three-stage workflow: **Trip → Pet → Care plan**
+- Mobile stages behave as focused app states rather than one long form
+- Trip stage validates trip name, destination, and date order
+- Pet stage stores pet name, owner phone, and one concise important travel note
+- Care-plan stage carries the destination into Care Now and reviews Primary/Backup readiness
+- One canonical active plan persists under `pawpath.activeCarePlan.v1`
+- Existing facility selections are preserved when trip/pet details change
 
 ### Find Care Now
 
-- Leaflet interactive map with OpenStreetMap tiles
-- Nominatim place/ZIP/destination geocoding
-- Browser geolocation through **Use my location**
-- Overpass veterinary-facility search within roughly 10 miles (16 km)
-- Distance-sorted facility results
-- Conservative emergency / urgent / routine classification based on OpenStreetMap tags and listing names
-- Confidence/call-ahead language when emergency capability is inferred or important listing details are missing
-- Phone, Google Maps Directions, and OpenStreetMap source links when available
-- Select a Primary facility only when the listing is classified as emergency or urgent
-- Select a distinct Backup facility
-- Persist both selections into the active care plan
+- Leaflet map, OpenStreetMap tiles, Nominatim geocoding, browser geolocation, and Overpass veterinary discovery
+- Normal veterinary search is approximately 10 miles / 16 km
+- Conservative emergency / urgent / routine classification based on source evidence
+- Compact results open a premium facility decision sheet (mobile bottom sheet / desktop detail panel)
+- Decision sheet shows source-supported address, phone, hours, website when available, distance, confidence explanation, OSM source, Call and Directions actions
+- Primary/Backup selection occurs from the decision sheet and persists to the active plan
+- Primary requires emergency/urgent evidence; Backup must be distinct
+- If the normal search contains no emergency/urgent listing, PawPath automatically expands emergency discovery to 30 miles
+- Expanded results are explicitly labeled and call-ahead language remains prominent
+- If emergency/urgent care cannot be identified within 30 miles, PawPath provides an external emergency-veterinarian search action rather than implying availability
 
-### Saved Plan
+### Saved Plan and Emergency Mode
 
 - Review trip, pet, Primary, and Backup information
-- Call and Directions actions for saved facilities when data is available
-- Edit trip or return to care search
-- Clear the saved plan with confirmation
-- Explicit reminder that the plan exists only in the current browser
-
-### Emergency Mode
-
-- Available from Saved Plan when both Primary and Backup exist
-- Hides normal navigation and unrelated planning content
-- Presents saved Primary and Backup with immediate Call and Directions actions
-- Keeps saved pet, owner phone, and important note visible when present
-- Includes call-ahead language and does not diagnose or medically triage
-- Provides explicit Exit Emergency Mode action
+- Call and Directions actions for saved facilities
+- Clear/edit actions
+- Emergency Mode prioritizes the saved Primary and Backup—the payoff of planning ahead—before live discovery is needed
+- Focused Emergency Mode keeps concise pet/contact notes visible and does not diagnose or medically triage
 
 ### Resources
 
-- Travel preparation guidance
-- Care-away-from-home guidance
-- Links to CDC pet travel safety information
-- Links to USDA APHIS pet travel and state requirements
-- Link to VECCS emergency/critical-care facility information
-- Link to ASPCA Animal Poison Control
-- Direct route back to PawPath Care Now
+Curated travel-preparation and care-away-from-home guidance with links to CDC, USDA APHIS, VECCS, ASPCA Animal Poison Control, and PawPath Care Now.
 
 ### PWA/mobile shell
 
-- Installable web-app manifest
-- Conservative same-origin app-shell service worker
-- Compact mobile header
-- Persistent five-destination bottom navigation outside Emergency Mode
-- Active-route icon state
-- Safe-area-aware bottom navigation
-- Mobile-condensed heroes, cards, controls, and spacing
+Installable manifest, conservative same-origin shell cache, compact header, safe-area-aware five-destination bottom navigation, active-route state, and condensed mobile layouts.
 
 ## Important limitations
 
 - No automated browser-test suite
 - No backend, accounts, cloud synchronization, or multi-plan storage
-- Public Nominatim, Overpass, and OpenStreetMap services are POC infrastructure, not production-scale dependencies
-- Facility records can be incomplete, inconsistent, or outdated
-- PawPath does not guarantee facility hours, services, species accepted, emergency capability, or availability
-- Saved data is local to the current browser and can be lost when browser data is cleared
-- No offline maps
-- Remote hero imagery still requires network access
-- The older conditional 30-mile emergency fallback implementation is not currently wired into the premium multi-page Care Now page
-- The older facility-detail drawer and three-stage mobile Plan stepper are not currently wired into the premium multi-page pages
+- Public Nominatim, Overpass, and OpenStreetMap services are POC infrastructure
+- Facility data may be incomplete or outdated; PawPath does not guarantee hours, services, species accepted, emergency capability, or availability
+- Saved data is local to the current browser
+- No offline maps or offline live facility discovery
+- Remote hero imagery requires network access
+- Expanded emergency search depends on OpenStreetMap evidence and may fail to identify a facility even when one exists
 
 ## Validation status
 
-Repository/static review has been completed for the premium multi-page architecture. Browser-dependent behavior still requires deployed testing, especially Nominatim/Overpass requests, geolocation permissions, Leaflet resizing, service-worker upgrades, iPhone Safari/Android Chrome safe areas, and the complete Plan → Care Now → Primary/Backup → Saved → Emergency Mode flow.
-
-Do not describe those items as browser-confirmed until that smoke test is completed.
+Static/source contract review is required for every increment, but there is no automated browser suite. The premium three-stage Plan workflow, decision sheet, and 30-mile expanded emergency search require deployed mobile/desktop smoke testing before being described as browser-confirmed.
 
 ## Phase 1 status
 
-The current objective remains `v0.2 – Care Plan POC`. The active premium PWA again supports the core care-plan path: trip essentials, care search, Primary/Backup selection, saved-plan review, and focused Emergency Mode.
-
-Before moving to curated demo data, printable emergency card, or shareable validation, complete the deployed smoke test and mobile screen-by-screen review so the reconciled architecture is verified on real phone browsers.
+The objective remains `v0.2 – Care Plan POC`. The active premium architecture now incorporates the useful behavior from the historical mobile Plan stepper, facility-detail drawer, and expanded emergency search as native premium components rather than reviving the old single-page presentation.
 
 ## Immediate next step
 
-Run the deployed smoke-test matrix, then resume the mobile screen-by-screen review requested after the premium visual redesign.
+Smoke-test the complete deployed path—Plan stages → Care Now → facility details → Primary/Backup → Saved → Emergency Mode, including a location that triggers expanded emergency discovery—then resume the mobile screen-by-screen review.
