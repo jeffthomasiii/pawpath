@@ -1,99 +1,97 @@
 # PawPath Roadmap
 
+Last updated: September 16, 2026
+
 ## Roadmap principle
 
 PawPath should not grow by adding generic map features. Each phase should strengthen the core promise:
 
 > **Help people traveling with pets prepare for care needs and act quickly when something goes wrong.**
 
-The immediate priority is to make that promise unmistakable in a shareable proof of concept.
+The immediate priority remains a clear, reliable, shareable proof of concept.
 
-## Current state: Mapping foundation
+## Current state — premium Care Plan POC
 
-The existing application provides the technical foundation:
+PawPath is now a premium multi-page PWA proof of concept with separate Home, Plan a Trip, Find Care Now, Saved Plan/Emergency Mode, and Resources destinations.
 
-- Responsive web interface
-- Leaflet and OpenStreetMap map
-- Destination and ZIP-code geocoding
-- Current-location search
-- Nearby veterinary-facility queries
-- Routine and emergency filtering
-- Clinic cards synchronized with markers
-- External directions links
-- No required paid Google Maps API
+The active flow supports trip/pet essentials, live destination/current-location veterinary search, conservative care classification, Primary/Backup selection, one locally saved care plan, saved-plan actions, and a focused Emergency Mode. The post-redesign architecture and validation boundary are documented in `docs/REPO_AUDIT_2026-09-16.md` and `docs/chatgpt-project/CURRENT_STATE.md`.
 
-This foundation demonstrates location search, but it does not yet fully demonstrate why PawPath is different from a general map application.
+The repository still contains the earlier single-page implementation for reference. Its modules are not automatically active in the premium multi-page pages.
+
+## Immediate gate before more feature work
+
+Complete deployed smoke testing of the reconciled premium PWA and then the mobile screen-by-screen review. Browser-dependent behavior must be validated separately because the repository has no automated browser-test suite.
 
 ---
 
 # Phase 1 — Make the “Why PawPath?” obvious
 
-**Target:** Shareable proof of concept
-
+**Target:** Shareable proof of concept  
 **Release concept:** `v0.2 – Care Plan POC`
 
-## Goal
+## Core product requirements
 
-Transform the current clinic finder into a visible pet-travel preparedness workflow.
+### Plan a Trip / Find Care Now
 
-## Required features
+- Make preparation before travel distinct from immediate nearby-care search
+- Keep Plan a Trip as the preparedness workflow
+- Preserve current-location search for immediate care
 
-### 1.1 Plan a Trip and Find Care Now
+### Facility evaluation
 
-- Add two clear modes at the top of the experience
-- Make Plan a Trip the primary preparedness flow
-- Preserve current-location search for Find Care Now
-- Update homepage language to emphasize care planning rather than simple discovery
+- Present care type conservatively
+- Distinguish source-listed information from inferred/unknown information
+- Show source and call-ahead guidance
+- Never imply guaranteed hours, capability, species acceptance, or availability
 
-### 1.2 Facility detail and confidence
+### Trip care plan
 
-- Add a detail panel or drawer
-- Classify care type without overstating certainty
-- Display confidence states such as Source listed, Likely emergency, Needs confirmation, and Demo verified
-- Show source notes and “call ahead” guidance
+- Store trip and concise pet/traveler essentials
+- Select a Primary emergency/urgent-care facility
+- Select a distinct Backup
+- Save one active plan locally in the browser
 
-### 1.3 Trip care-plan builder
+### Saved plan / Emergency Mode
 
-- Select a primary emergency facility
-- Select a backup facility
-- Optionally select routine care
-- Add destination, trip name, pet name, owner contact, and important note
-- Save one active plan in browser `localStorage`
+- Keep the saved plan easy to reach
+- Provide Call and Directions actions where data exists
+- Keep Primary first and Backup immediately available in Emergency Mode
+- Reduce unrelated decision-making during urgent use
 
-### 1.4 Saved plan summary
+### Curated demonstration data
 
-- Display the active trip plan persistently
-- Provide Call, Directions, Edit, Clear, and Open Emergency Mode actions
-- Restore the plan after page refresh
+- Add one or two transparent example destinations
+- Keep curated records clearly labeled with source/review context
+- Ensure the complete POC can be demonstrated even when public OSM data is sparse
 
-### 1.5 Emergency Mode
+### Printable emergency card
 
-- Present the primary facility first
-- Provide large Call and Directions actions
-- Display the backup immediately below
-- Include saved pet and owner information
-- Minimize unrelated controls and map exploration
+- Provide a print-friendly plan summary
+- Include Primary, Backup, phone/address data, pet/traveler essentials, and generated date
+- Use the browser print workflow for Print / Save as PDF
 
-### 1.6 Curated demonstration mode
+### Shareable validation
 
-- Add one or two reliable demonstration destinations
-- Store curated facility records in a repository JSON file
-- Clearly identify demo data and reviewed dates
-- Ensure the complete POC flow can be demonstrated consistently
-
-### 1.7 Printable emergency card
-
-- Create a print-friendly plan summary
-- Include primary and backup facilities, phone numbers, addresses, pet name, owner contact, important note, and generated date
-- Provide a Print / Save as PDF action using the browser print workflow
+- Run the two-minute product-understanding test
+- Verify desktop and mobile behavior
+- Document known limitations and public-service constraints
 
 ## Phase 1 exit criteria
 
-- A viewer understands the product distinction within two minutes
+- A viewer understands the PawPath distinction within two minutes
 - A destination-based care plan can be created in under three minutes
-- Primary and backup facilities remain saved after refresh
-- Emergency Mode presents the key actions in under 30 seconds
+- Primary and Backup remain saved after refresh
+- Emergency Mode exposes key saved actions quickly
 - The demo works consistently on desktop and mobile
+- Documentation describes the active implementation rather than historical modules
+
+## Phase 1 sequence from here
+
+1. Deployed smoke test of the reconciled premium PWA
+2. Mobile screen-by-screen review and fixes
+3. Curated demonstration data
+4. Printable emergency card
+5. Shareable POC validation
 
 ---
 
@@ -101,28 +99,9 @@ Transform the current clinic finder into a visible pet-travel preparedness workf
 
 **Release concept:** `v0.3 – Trust Layer`
 
-## Goal
+Define a facility-verification standard, reviewed/last-checked dates, stronger care-type taxonomy, better source attribution, stale-data warnings, correction feedback, and production data-provider evaluation.
 
-Make care-type and availability information more useful without creating false certainty.
-
-## Features
-
-- Establish a documented facility-verification standard
-- Add reviewed and last-checked dates
-- Add structured care-type taxonomy
-- Add hours and after-hours information when reliable
-- Add animal types served when available
-- Add service capability fields such as emergency surgery, hospitalization, and exotics
-- Add stronger data-source attribution
-- Add stale-data warnings
-- Add a simple correction or feedback mechanism
-- Evaluate production veterinary-data providers and partnership options
-
-## Phase 2 exit criteria
-
-- Users can tell which facts are verified, source-provided, inferred, or unknown
-- Critical emergency claims are never presented without confidence context
-- Facility records have a defined source and review history
+**Exit:** users can distinguish verified, source-provided, inferred, and unknown facts.
 
 ---
 
@@ -130,53 +109,19 @@ Make care-type and availability information more useful without creating false c
 
 **Release concept:** `v0.4 – Route Planning`
 
-## Goal
+Add multiple trips/stops, route-adjacent care, care coverage per stop, gap identification, and intentional sharing with travel companions.
 
-Support multi-stop travel rather than only one destination.
-
-## Features
-
-- Save multiple trips
-- Add travel dates
-- Add multiple destinations or overnight stops
-- Search for care around each stop
-- Display route-adjacent emergency options
-- Identify gaps where emergency care is far away
-- Add a trip overview with primary and backup care per stop
-- Share a complete trip plan with a spouse, family member, sitter, or travel companion
-
-## Phase 3 exit criteria
-
-- A user can prepare care options for an entire road trip
-- Each major stop has an identified primary and backup option
-- The user can recognize stretches of travel with limited nearby care
+**Exit:** a traveler can prepare Primary/Backup care across a multi-stop road trip.
 
 ---
 
-# Phase 4 — Offline readiness and installation
+# Phase 4 — Offline readiness
 
 **Release concept:** `v0.5 – Road Ready`
 
-## Goal
+Build on the current installable shell with locally cached critical saved-plan information, offline emergency card, connectivity state, and provider-permitted offline mapping strategies.
 
-Keep critical information available when connectivity is poor.
-
-## Features
-
-- Progressive Web App installation
-- Offline application shell
-- Locally cached active care plans
-- Offline emergency card
-- Cached facility details for saved plans
-- Connectivity-status indicator
-- Graceful fallback when live search is unavailable
-- Optional limited-area map caching only through a provider and method that permits it
-
-## Phase 4 exit criteria
-
-- Saved plans remain accessible without a network connection
-- The app communicates clearly when information cannot be refreshed
-- No prohibited tile prefetching or unsupported public-API usage is introduced
+**Exit:** critical saved information remains usable when connectivity is poor.
 
 ---
 
@@ -184,26 +129,7 @@ Keep critical information available when connectivity is poor.
 
 **Release concept:** `v0.6 – Pet Travel Profile`
 
-## Goal
-
-Give the care plan the essential pet context needed during travel.
-
-## Features
-
-- Multiple pet profiles
-- Species, breed, age, weight, and identifying information
-- Medications and allergies
-- Primary veterinarian contact
-- Insurance information
-- Vaccination and document attachments
-- Emergency contact
-- Shareable limited-information profile
-- Privacy controls and clear local/cloud storage choices
-
-## Phase 5 exit criteria
-
-- A traveler can provide essential information without searching through separate files
-- Sensitive information is shared intentionally and minimally
+Only after the care-plan workflow is validated, consider richer pet profiles, medications/allergies, veterinarian/insurance information, documents, emergency contacts, and explicit privacy controls.
 
 ---
 
@@ -211,72 +137,16 @@ Give the care plan the essential pet context needed during travel.
 
 **Release concept:** `v1.0 – PawPath Travel Safety Platform`
 
-## Goal
+Accounts, secure cloud synchronization, shared household plans, verified facility partnerships, production data integrations, and a sustainable operating model remain later-stage work.
 
-Move from a validated individual POC to a sustainable product.
-
-## Potential features
-
-- Optional user accounts
-- Secure cloud synchronization
-- Shared household plans
-- Clinic and campground partnerships
-- Verified facility portal
-- Data-provider integrations
-- Notifications about changed facility information
-- Poison-control and emergency-resource integrations
-- Analytics focused on product reliability and successful planning
-- Sustainable operating and business model
-
-## Preconditions before Phase 6
+## Preconditions
 
 - Core planning workflow validated with real users
-- Clear evidence that travelers value saved care plans and Emergency Mode
+- Evidence that saved care plans and Emergency Mode provide distinct value
 - Production data agreements identified
-- Privacy and security architecture defined
-- Public API usage replaced or formalized for production traffic
+- Privacy/security architecture defined
+- Public POC APIs replaced or formalized for production traffic
 
----
+## Decision filter
 
-# Prioritized development backlog
-
-## Now — build the shareable POC
-
-1. Add Plan a Trip / Find Care Now modes
-2. Add facility-detail and confidence states
-3. Add primary and backup selection
-4. Save the active plan in `localStorage`
-5. Add saved-plan summary
-6. Add Emergency Mode
-7. Add curated demo data
-8. Add printable emergency card
-9. Refine accessibility and responsive behavior
-10. Run a structured two-minute demo test
-
-## Next — improve credibility
-
-1. Define verification rules
-2. Improve care-type classification
-3. Add reliable hours and availability data
-4. Evaluate production data sources
-5. Add correction feedback
-
-## Later — expand travel value
-
-1. Multi-stop trips
-2. Route-adjacent care
-3. Offline readiness
-4. Portable pet profile
-5. Accounts and sharing
-
-# Decision filter for future features
-
-Before adding a feature, ask:
-
-1. Does this help a traveler prepare before care is needed?
-2. Does this reduce confusion during an urgent situation?
-3. Does this improve confidence without overstating certainty?
-4. Does this address a pet-travel need that general maps do not organize well?
-5. Can the value be demonstrated clearly in the current product story?
-
-If the answer is no, the feature should not displace the care-plan and emergency-readiness roadmap.
+Before adding a feature, ask whether it helps a traveler prepare before care is needed, reduces confusion during urgent use, improves confidence without overstating certainty, addresses a pet-travel need general maps do not organize well, and can be demonstrated clearly in the product story.
