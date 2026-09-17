@@ -1,0 +1,36 @@
+version: 1
+project: PawPath
+runtime:
+  provider: openai
+  model: gpt-6-astra
+  reasoning_effort: high
+  multi_agent:
+    enabled: true
+    max_concurrent_subagents: 3
+roles:
+  - root
+  - scout
+  - architect
+  - builder
+  - critic
+  - qa
+workflow:
+  - scout
+  - architect
+  - builders_parallel
+  - critic
+  - qa
+  - root_release_decision
+required_outputs:
+  - opportunity.json
+  - specification.json
+  - builder-a.json
+  - builder-b.json
+  - review.json
+  - qa.md
+  - changes.patch
+  - summary.md
+release:
+  create_draft_pr: true
+  auto_merge: false
+  human_merge_required: true

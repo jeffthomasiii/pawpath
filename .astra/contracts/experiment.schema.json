@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Astra Product Experiment",
+  "type": "object",
+  "required": ["hypothesis", "metric", "baseline", "target", "measurementWindow", "revenueConnection", "killCondition"],
+  "properties": {
+    "hypothesis": {"type": "string"},
+    "metric": {"type": "string"},
+    "baseline": {"type": ["number", "string", "null"]},
+    "target": {"type": ["number", "string"]},
+    "measurementWindow": {"type": "string"},
+    "revenueConnection": {"type": "string"},
+    "operatingCostChange": {"type": ["number", "string", "null"]},
+    "killCondition": {"type": "string"}
+  },
+  "additionalProperties": false
+}

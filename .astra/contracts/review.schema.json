@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Astra Critic Review",
+  "type": "object",
+  "required": ["verdict", "criteria", "findings", "requiredRemediation"],
+  "properties": {
+    "verdict": {"enum": ["PASS", "PASS_WITH_WARNINGS", "REVISE", "FAIL"]},
+    "criteria": {"type": "array", "items": {"type": "object", "required": ["id", "status", "evidence"], "properties": {"id": {"type": "string"}, "status": {"enum": ["pass", "fail", "blocked"]}, "evidence": {"type": "string"}}, "additionalProperties": false},
+    "findings": {"type": "array", "items": {"type": "string"}},
+    "requiredRemediation": {"type": "array", "items": {"type": "string"}},
+    "warnings": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

@@ -1,0 +1,19 @@
+version: 1
+currency: USD
+phase: 1
+run_budget:
+  target_max_api_cost: 10
+  note: Advisory in Phase 1; the workflow also has a hard execution timeout. Cost-enforced cancellation is a later milestone.
+product_rule:
+  require_business_connection: true
+  accepted_connections:
+    - activation
+    - retention
+    - conversion
+    - reliability
+    - trust
+    - cost_reduction
+    - learning
+  rule: Every product change must name the user outcome and business metric it is intended to influence, even when the immediate work is enabling infrastructure.
+revenue_guardrail:
+  rule: Revenue is an outcome to measure, not a claim the agent may fabricate or guarantee.

@@ -1,0 +1,81 @@
+name: Astra Development Team
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: GitHub issue number for Astra to execute
+        required: true
+        type: string
+      create_pr:
+        description: Apply a returned patch and create a draft PR
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: read
+
+jobs:
+  astra:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install Astra runner
+        working-directory: tools/astra-team
+        run: npm install --no-audit --no-fund
+
+      - name: Validate Astra configuration
+        working-directory: tools/astra-team
+        run: npm run validate
+
+      - name: Run Astra team
+        working-directory: tools/astra-team
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node run.mjs '${{ inputs.issue_number }}'
+
+      - name: Validate Astra evidence contracts
+        working-directory: tools/astra-team
+        run: node validate-output.mjs ${{ inputs.create_pr && '--require-patch' || '' }}
+
+      - name: Upload Astra evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: astra-issue-${{ inputs.issue_number }}-${{ github.run_id }}
+          path: .astra-run/
+          if-no-files-found: error
+
+      - name: Apply Astra patch
+        if: ${{ inputs.create_pr }}
+        run: |
+          git apply --check .astra-run/changes.patch
+          git apply .astra-run/changes.patch
+          git add -A -- . ':(exclude).astra-run/**'
+          node tools/astra-team/guard.mjs
+          git diff --cached --check
+          for file in $(git diff --cached --name-only -- '*.js' '*.mjs'); do node --check "$file"; done
+
+      - name: Create draft PR
+        if: ${{ inputs.create_pr }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          BRANCH="astra/issue-${{ inputs.issue_number }}-${{ github.run_id }}"
+          git config user.name "pawpath-astra[bot]"
+          git config user.email "pawpath-astra[bot]@users.noreply.github.com"
+          git switch -c "$BRANCH"
+          git commit -m "Astra: implement issue #${{ inputs.issue_number }}"
+          git push origin "$BRANCH"
+          gh pr create --draft --base main --head "$BRANCH" --title "Astra: issue #${{ inputs.issue_number }}" --body-file .astra-run/summary.md
