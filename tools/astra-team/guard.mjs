@@ -1,8 +1,6 @@
 import { execFileSync } from 'node:child_process';
 
-const protectedPrefixes = [
-  '.astra/autonomy.yaml', '.astra/policies/', '.github/workflows/astra-team.yml', '.github/CODEOWNERS', '.env'
-];
+const protectedPrefixes = ['.astra/', '.github/workflows/', '.github/CODEOWNERS', '.env'];
 const changed = execFileSync('git', ['diff', '--name-only', '--cached'], { encoding: 'utf8' })
   .split(/\r?\n/).filter(Boolean);
 const blocked = changed.filter((file) => protectedPrefixes.some((prefix) => file === prefix || file.startsWith(prefix)));

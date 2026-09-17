@@ -30,12 +30,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-          cache-dependency-path: tools/astra-team/package-lock.json
 
       - name: Install Astra runner
         working-directory: tools/astra-team
-        run: npm ci
+        run: npm install --no-audit --no-fund
 
       - name: Validate Astra configuration
         working-directory: tools/astra-team
@@ -48,6 +46,10 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: node run.mjs '${{ inputs.issue_number }}'
 
+      - name: Validate Astra evidence contracts
+        working-directory: tools/astra-team
+        run: node validate-output.mjs ${{ inputs.create_pr && '--require-patch' || '' }}
+
       - name: Upload Astra evidence
         uses: actions/upload-artifact@v4
         with:
@@ -58,11 +60,12 @@ jobs:
       - name: Apply Astra patch
         if: ${{ inputs.create_pr }}
         run: |
-          test -f .astra-run/changes.patch
           git apply --check .astra-run/changes.patch
           git apply .astra-run/changes.patch
-          git add -A
+          git add -A -- . ':(exclude).astra-run/**'
           node tools/astra-team/guard.mjs
+          git diff --cached --check
+          for file in $(git diff --cached --name-only -- '*.js' '*.mjs'); do node --check "$file"; done
 
       - name: Create draft PR
         if: ${{ inputs.create_pr }}
@@ -75,6 +78,4 @@ jobs:
           git switch -c "$BRANCH"
           git commit -m "Astra: implement issue #${{ inputs.issue_number }}"
           git push origin "$BRANCH"
-          SUMMARY=.astra-run/summary.md
-          if [ -f "$SUMMARY" ]; then BODY_FILE="$SUMMARY"; else BODY_FILE=.astra-run/manifest.json; fi
-          gh pr create --draft --base main --head "$BRANCH" --title "Astra: issue #${{ inputs.issue_number }}" --body-file "$BODY_FILE"
+          gh pr create --draft --base main --head "$BRANCH" --title "Astra: issue #${{ inputs.issue_number }}" --body-file .astra-run/summary.md
