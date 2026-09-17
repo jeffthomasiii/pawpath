@@ -1,0 +1,21 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Astra Implementation Specification",
+  "type": "object",
+  "required": ["title", "autonomyClass", "objective", "scope", "outOfScope", "acceptanceCriteria", "tests", "risks", "businessMetric"],
+  "properties": {
+    "title": {"type": "string"},
+    "autonomyClass": {"enum": ["green", "yellow", "red"]},
+    "objective": {"type": "string"},
+    "scope": {"type": "array", "items": {"type": "string"}},
+    "outOfScope": {"type": "array", "items": {"type": "string"}},
+    "interfaces": {"type": "array", "items": {"type": "string"}},
+    "filesLikelyAffected": {"type": "array", "items": {"type": "string"}},
+    "acceptanceCriteria": {"type": "array", "minItems": 1, "items": {"type": "object", "required": ["id", "criterion"], "properties": {"id": {"type": "string"}, "criterion": {"type": "string"}}, "additionalProperties": false},
+    "tests": {"type": "array", "items": {"type": "string"}},
+    "risks": {"type": "array", "items": {"type": "string"}},
+    "rollback": {"type": "string"},
+    "businessMetric": {"type": "string"}
+  },
+  "additionalProperties": false
+}

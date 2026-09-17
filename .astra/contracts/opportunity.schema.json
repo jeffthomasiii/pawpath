@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Astra Opportunity Contract",
+  "type": "object",
+  "required": ["problem", "evidence", "userOutcome", "businessConnection", "confidence", "constraints"],
+  "properties": {
+    "problem": {"type": "string", "minLength": 1},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "userOutcome": {"type": "string", "minLength": 1},
+    "businessConnection": {"type": "object", "required": ["metric", "mechanism"], "properties": {"metric": {"type": "string"}, "mechanism": {"type": "string"}}, "additionalProperties": true},
+    "confidence": {"enum": ["low", "medium", "high"]},
+    "constraints": {"type": "array", "items": {"type": "string"}},
+    "assumptions": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": false
+}

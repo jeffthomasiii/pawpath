@@ -1,0 +1,46 @@
+version: 1
+default_class: yellow
+classes:
+  green:
+    description: Low-risk, reversible maintenance.
+    examples:
+      - documentation corrections
+      - broken links
+      - test coverage
+      - accessibility fixes that preserve behavior
+      - isolated CSS regressions
+    agent_may_implement: true
+    agent_may_prepare_pr: true
+    human_merge_required: true
+  yellow:
+    description: Product or architecture changes with bounded impact.
+    examples:
+      - new non-sensitive features
+      - storage schema additions with migration coverage
+      - analytics instrumentation
+      - new UI flows
+    agent_may_implement: true
+    agent_may_prepare_pr: true
+    human_merge_required: true
+  red:
+    description: Requires explicit human approval before implementation.
+    examples:
+      - pricing or payments
+      - authentication or account security
+      - secrets or credential handling
+      - privacy-policy changes
+      - destructive migrations
+      - production data deletion
+      - veterinary diagnosis or triage logic
+      - claims that a facility is open, available, trusted, or appropriate without evidence
+      - changes to Astra governance or GitHub automation permissions
+    agent_may_implement: false
+    agent_may_prepare_pr: false
+    human_approval_required: true
+protected_paths:
+  - .astra/autonomy.yaml
+  - .astra/policies/
+  - .github/workflows/astra-team.yml
+  - .github/CODEOWNERS
+  - .env
+  - .env.*
